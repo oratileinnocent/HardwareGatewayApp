@@ -172,7 +172,8 @@ def create_presentation():
                  "Candidate Name: Oratile Innocent Tshosetso",
                  "Student Number: 222883253",
                  "Qualification: National Diploma in Computer Systems Engineering",
-                 "Date of Defense: November 2026 (Final Deliverable)"
+                 "Date of Defense: 24 November 2026 (Exhibition)",
+                 "Live Demo: oratileinnocent.github.io/HardwareGatewayApp"
              ],
              border_color=NAVY)
 
@@ -542,9 +543,11 @@ def create_presentation():
              ], border_color=NAVY)
 
     add_card(slide12, Inches(6.833), Inches(1.85), Inches(5.7), Inches(4.8),
-             "🔮 Phase 2 Roadmap",
+             "🔮 Phase 2 Roadmap & Online Links",
              [
-                 "Hardware-accelerated on-chip video encoding via dedicated DVP camera bus.",
+                 "Live Web Showcase: oratileinnocent.github.io/HardwareGatewayApp",
+                 "GitHub Repository: github.com/oratileinnocent/HardwareGatewayApp",
+                 "Hardware-accelerated on-chip H.264 video encoding via DVP bus.",
                  "WPA3 Enterprise 802.1X certificate-based mobile authentication.",
                  "BLE 5.0 fallback channel for radio-restricted facilities."
              ], border_color=SKY)
