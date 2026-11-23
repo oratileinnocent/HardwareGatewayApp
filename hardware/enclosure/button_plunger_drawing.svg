@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="100%" stop-color="#131A2B"/>
+    </linearGradient>
+    <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00A2C7"/>
+      <stop offset="50%" stop-color="#00F2FE"/>
+      <stop offset="100%" stop-color="#0080A0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect x="20" y="20" width="760" height="460" rx="16" fill="none" stroke="#1F2B45" stroke-width="1.5"/>
+
+  <!-- Title & Metadata -->
+  <text x="50" y="60" fill="#00F2FE" font-family="system-ui, sans-serif" font-size="20" font-weight="700" letter-spacing="1">PART 3: CAPTIVE TACTILE BUTTON PLUNGER</text>
+  <text x="50" y="85" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="13">File: button_plunger.stl | Height: 7.2 mm | Cap Ø 6.8 mm | Flange Ø 9.5 mm</text>
+
+  <!-- Cross Section / Orthographic Detail on Left, 3D Isometric on Right -->
+  <g transform="translate(60, 110)">
+    <!-- Section View Title -->
+    <text x="40" y="20" fill="#55D6BE" font-family="system-ui, sans-serif" font-size="14" font-weight="600">Cross-Section Profile</text>
+
+    <!-- Cross Section 2D Blueprint -->
+    <!-- Top Dished Cap -->
+    <path d="M 60 70 Q 120 85 180 70 L 180 170 L 220 170 L 220 195 L 140 195 L 140 235 L 100 235 L 100 195 L 20 195 L 20 170 L 60 170 Z" 
+          fill="#131E33" stroke="#00F2FE" stroke-width="2.5"/>
+
+    <!-- Dimension Lines -->
+    <!-- Cap Width (6.8mm) -->
+    <line x1="60" y1="50" x2="180" y2="50" stroke="#55D6BE" stroke-width="1.5"/>
+    <line x1="60" y1="45" x2="60" y2="65" stroke="#55D6BE" stroke-width="1.5"/>
+    <line x1="180" y1="45" x2="180" y2="65" stroke="#55D6BE" stroke-width="1.5"/>
+    <text x="120" y="42" fill="#55D6BE" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Ø 6.8 mm (Cap)</text>
+
+    <!-- Flange Width (9.5mm) -->
+    <line x1="20" y1="210" x2="220" y2="210" stroke="#00F2FE" stroke-width="1.5"/>
+    <line x1="20" y1="200" x2="20" y2="220" stroke="#00F2FE" stroke-width="1.5"/>
+    <line x1="220" y1="200" x2="220" y2="220" stroke="#00F2FE" stroke-width="1.5"/>
+    <text x="120" y="225" fill="#00F2FE" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Ø 9.5 mm (Flange)</text>
+
+    <!-- Actuator Stem (2.8mm) -->
+    <text x="120" y="255" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="11" text-anchor="middle">Actuator Stem: Ø 2.8 x 1.8 mm</text>
+  </g>
+
+  <!-- 3D Isometric View on Right -->
+  <g transform="translate(420, 110)">
+    <text x="80" y="20" fill="#55D6BE" font-family="system-ui, sans-serif" font-size="14" font-weight="600">3D Isometric View</text>
+
+    <!-- Flange Base (Cylinder) -->
+    <ellipse cx="160" cy="210" rx="65" ry="24" fill="#005A70" stroke="#00F2FE" stroke-width="2"/>
+    <rect x="95" y="195" width="130" height="15" fill="#006A84"/>
+    <ellipse cx="160" cy="195" rx="65" ry="24" fill="#007F9E" stroke="#00F2FE" stroke-width="1.5"/>
+
+    <!-- Main Button Column -->
+    <rect x="115" y="100" width="90" height="95" fill="url(#btnGrad)"/>
+    
+    <!-- Top Dished Thumb Dish -->
+    <ellipse cx="160" cy="100" rx="45" ry="16" fill="#00F2FE" stroke="#FFF" stroke-width="2"/>
+    <ellipse cx="160" cy="102" rx="35" ry="12" fill="#00C4DD"/>
+
+    <!-- Actuator Pip (dashed underneath) -->
+    <rect x="142" y="210" width="36" height="25" fill="#003D4C" stroke="#00F2FE" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <ellipse cx="160" cy="235" rx="18" ry="6" fill="#002D38" stroke="#00F2FE" stroke-width="1.2" stroke-dasharray="2,2"/>
+
+    <!-- Feature Annotations -->
+    <!-- Concave Thumb Dish -->
+    <line x1="160" y1="90" x2="230" y2="60" stroke="#FFF" stroke-width="1.5"/>
+    <text x="240" y="60" fill="#FFF" font-family="system-ui, sans-serif" font-size="12" font-weight="600">Ergonomic Concave Dish</text>
+    <text x="240" y="75" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="10">Comfortable thumb actuation</text>
+
+    <!-- Anti-Drop Flange -->
+    <line x1="225" y1="200" x2="260" y2="170" stroke="#00F2FE" stroke-width="1.5"/>
+    <text x="270" y="170" fill="#00F2FE" font-family="system-ui, sans-serif" font-size="12" font-weight="600">Anti-Drop Retaining Flange</text>
+    <text x="270" y="185" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="10">Captive design; cannot fall out</text>
+
+    <!-- Switch Actuator Pip -->
+    <line x1="178" y1="225" x2="230" y2="245" stroke="#55D6BE" stroke-width="1.5"/>
+    <text x="240" y="245" fill="#55D6BE" font-family="system-ui, sans-serif" font-size="12" font-weight="600">Switch Actuator Pip</text>
+    <text x="240" y="260" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="10">Directly depresses tactile switch</text>
+  </g>
+
+  <!-- Bottom Spec Bar -->
+  <g transform="translate(50, 420)">
+    <rect x="0" y="0" width="700" height="40" rx="8" fill="#131A2B" stroke="#1F2B45"/>
+    <text x="20" y="25" fill="#E2E8F0" font-family="system-ui, sans-serif" font-size="12">
+      <tspan fill="#00F2FE" font-weight="600">Print Tip:</tspan> Print upright with wide flange directly on the build plate. 100% Infill. Zero supports needed.
+    </text>
+  </g>
+</svg>

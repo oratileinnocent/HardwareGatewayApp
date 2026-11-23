@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Comprehensive Project Portfolio - Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 16mm 14mm 16mm 14mm;
+    @top-right {
+      content: "TUT - PJD301B / IDC30BI Project Portfolio";
+      font-size: 8pt;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #666;
+    }
+    @bottom-center {
+      content: "Page " counter(page);
+      font-size: 8.5pt;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #555;
+    }
+  }
+
+  @page :first {
+    @top-right {
+      content: none;
+    }
+    @bottom-center {
+      content: none;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    color: #222;
+    line-height: 1.38;
+    font-size: 9.2pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* Prevent awkward cuts */
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  table.data-table, pre, .callout-box, .diagram-container {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Cover Pages */
+  .cover-container {
+    height: 250mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    padding: 4mm 0;
+  }
+
+  .tut-logo-container {
+    margin-bottom: 8px;
+  }
+
+  .faculty-title {
+    font-size: 13pt;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #111;
+    margin-top: 15px;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  .department-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #222;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+
+  .subject-title {
+    font-size: 12pt;
+    font-weight: 800;
+    color: #003366;
+    margin-top: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .document-type {
+    font-size: 21pt;
+    font-weight: 900;
+    color: #111;
+    margin-top: 25px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  .section-divider-title {
+    font-size: 24pt;
+    font-weight: 900;
+    color: #003366;
+    margin-top: 40px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-divider-subtitle {
+    font-size: 13pt;
+    font-weight: 600;
+    color: #555;
+    margin-top: 12px;
+  }
+
+  .metadata-box {
+    margin: 25px auto 15px auto;
+    width: 95%;
+    text-align: left;
+    border-collapse: collapse;
+  }
+
+  .metadata-box td {
+    padding: 5px 8px;
+    font-size: 9pt;
+    vertical-align: top;
+  }
+
+  .metadata-label {
+    font-weight: 700;
+    width: 28%;
+    color: #111;
+    text-transform: uppercase;
+    font-size: 8.6pt;
+  }
+
+  .metadata-value {
+    color: #222;
+    font-weight: 500;
+  }
+
+  .cover-footer {
+    padding-top: 8px;
+    font-size: 9pt;
+    color: #555;
+    border-top: 2px solid #003366;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  /* Headings */
+  h1 {
+    font-size: 13pt;
+    font-weight: 800;
+    color: #003366;
+    text-transform: uppercase;
+    border-bottom: 1.5px solid #003366;
+    padding-bottom: 2px;
+    margin-top: 14px;
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    font-size: 10.4pt;
+    font-weight: 700;
+    color: #134074;
+    margin-top: 10px;
+    margin-bottom: 4px;
+  }
+
+  h3 {
+    font-size: 9.4pt;
+    font-weight: 700;
+    color: #222;
+    margin-top: 8px;
+    margin-bottom: 3px;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 6px;
+    text-align: justify;
+  }
+
+  /* Table of Contents */
+  .toc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  .toc-table td {
+    padding: 4px 0;
+    font-size: 9.1pt;
+  }
+
+  .toc-title {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #003366;
+  }
+
+  .toc-dots {
+    border-bottom: 1px dotted #888;
+    width: 78%;
+    display: inline-block;
+    margin: 0 5px;
+  }
+
+  .toc-page {
+    text-align: right;
+    font-weight: 600;
+    color: #222;
+  }
+
+  /* Tables */
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0 10px 0;
+    font-size: 8.3pt;
+  }
+
+  table.data-table th, table.data-table td {
+    border: 1px solid #c0c6cf;
+    padding: 4.5px 6.5px;
+    text-align: left;
+  }
+
+  table.data-table th {
+    background-color: #003366;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  table.data-table tr:nth-child(even) {
+    background-color: #f7f9fc;
+  }
+
+  /* Code & Monospace Blocks */
+  pre, code {
+    font-family: 'Consolas', 'Courier New', monospace;
+  }
+
+  pre {
+    background-color: #0d131f;
+    color: #e0f2fe;
+    padding: 7px 9px;
+    border-radius: 4px;
+    font-size: 7.7pt;
+    line-height: 1.25;
+    margin: 5px 0;
+    overflow-x: auto;
+    border-left: 3px solid #00c4cc;
+  }
+
+  p code, td code, li code {
+    background-color: #eef2f6;
+    color: #003366;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 8.2pt;
+    font-weight: 600;
+  }
+
+  kbd {
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-bottom: 2px solid #94a3b8;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 7.8pt;
+    font-weight: 600;
+    font-family: inherit;
+  }
+
+  /* Callout Boxes */
+  .callout-box {
+    background-color: #f0f7ff;
+    border-left: 4px solid #0077b6;
+    padding: 6px 9px;
+    margin: 6px 0;
+    font-size: 8.4pt;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .callout-box.warning {
+    background-color: #fff9e6;
+    border-left-color: #e09f3e;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    font-size: 7.8pt;
+    letter-spacing: 0.5px;
+  }
+
+  ul, ol {
+    margin-top: 2px;
+    margin-bottom: 5px;
+    padding-left: 17px;
+  }
+
+  li {
+    margin-bottom: 2.5px;
+  }
+
+  .part-banner {
+    background-color: #003366;
+    color: #ffffff;
+    padding: 12px 18px;
+    border-radius: 4px;
+    margin: 15px 0 20px 0;
+    text-align: center;
+  }
+
+  .part-banner h2 {
+    color: #ffffff;
+    font-size: 15pt;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .part-banner p {
+    color: #90e0ef;
+    margin: 4px 0 0 0;
+    font-size: 10pt;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================================================================= -->
+<!-- MASTER PORTFOLIO COVER PAGE                                       -->
+<!-- ================================================================= -->
+<div class="cover-container">
+  <div>
+    <div class="tut-logo-container">
+      
+<div style="display: inline-flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 5px;">
+  <img src="data:image/png;base64,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" style="height: 80px; width: auto; object-fit: contain;" alt="TUT Emblem">
+  <div style="text-align: left;">
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 20pt; font-weight: 800; color: #003366; line-height: 1.15;">Tshwane University<br>of Technology</div>
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 11pt; font-style: italic; font-weight: 600; color: #C62828; margin-top: 4px;">We empower people</div>
+  </div>
+</div>
+
+    </div>
+
+    <div class="faculty-title">
+      FACULTY OF<br>
+      INFORMATION AND COMMUNICATION TECHNOLOGY
+    </div>
+
+    <div class="department-title">
+      NATIONAL DIPLOMA: COMPUTER SYSTEMS ENGINEERING
+    </div>
+
+    <div class="subject-title">
+      PROJECT DESIGN III: PJD 301B / IDC30BI
+    </div>
+
+    <div class="document-type">
+      COMPREHENSIVE PROJECT PORTFOLIO
+    </div>
+    <div style="font-size: 11pt; color: #555; font-weight: 600; margin-top: 6px;">
+      PROJECT PROPOSAL &bull; DESIGN DOCUMENTATION &bull; USER MANUAL
+    </div>
+
+    <table class="metadata-box">
+      <tr>
+        <td class="metadata-label">PROJECT TITLE:</td>
+        <td class="metadata-value"><strong>Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</strong></td>
+      </tr>
+      <tr>
+        <td class="metadata-label">LECTURER NAMES:</td>
+        <td class="metadata-value">Muwanguzi Mark Ntume and Chunling Du</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">STUDENT NAME:</td>
+        <td class="metadata-value">Oratile Innocent Tshosetso</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">STUDENT NUMBER:</td>
+        <td class="metadata-value">222883253</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">EMAIL ADDRESS:</td>
+        <td class="metadata-value">oratileinnocent.45@gmail.com</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">CONTACT NUMBERS:</td>
+        <td class="metadata-value">076 950 6870</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">ACADEMIC YEAR:</td>
+        <td class="metadata-value">2026</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="cover-footer">
+    Department of Computer Systems Engineering &bull; Tshwane University of Technology (TUT)
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ================================================================= -->
+<!-- MASTER PORTFOLIO TABLE OF CONTENTS                                -->
+<!-- ================================================================= -->
+<h1>Master Portfolio Table of Contents</h1>
+
+<table class="toc-table">
+  <tr>
+    <td class="toc-title" style="font-size: 10.5pt; color: #003366;">PART I: PROJECT PROPOSAL</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page"><strong>3</strong></td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">1. Introduction</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">3</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">2. Project Objectives</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">3</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">3. Project Description & Target Market</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">4</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">4. Project Technology</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">4</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">5. Timetable (Phases 1–4)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">4</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">6. Budget & Financial Procurement</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">5</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">7. Conclusion & References</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">5</td>
+  </tr>
+
+  <tr><td colspan="3" style="padding-top: 10px;"></td></tr>
+
+  <tr>
+    <td class="toc-title" style="font-size: 10.5pt; color: #003366;">PART II: TECHNICAL DESIGN DOCUMENTATION</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page"><strong>6</strong></td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">1. Introduction & Demarcation</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">7</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">2. Systems Overview</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">7</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">3. Design Considerations (Latency, Zero-Driver, Air-Gap)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">8</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">4. Assumptions, Dependencies & Constraints</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">8</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">5. Goals and Guidelines (KISS, RTOS Pinning, Velocity Math)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">9</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">6. Development Methods & Standards (IEEE 1016, USB-IF, RFC 6455)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">9</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">7. Architectural Strategies & Memory Policies</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">10</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">8. System & Subsystem Architecture (3-Tier Model)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">11</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">9. Hardware Interface & Pin Allocation</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">12</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">10. Detailed System Design (IEEE 1016 Specification)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">12</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">11. Functional Flow & State Analysis (Process & Status Tables)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">14</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">12. Conclusion, Glossary & Bibliography</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">15</td>
+  </tr>
+
+  <tr><td colspan="3" style="padding-top: 10px;"></td></tr>
+
+  <tr>
+    <td class="toc-title" style="font-size: 10.5pt; color: #003366;">PART III: SOFTWARE & HARDWARE USER MANUAL</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page"><strong>16</strong></td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">1. Scope & System Overview</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">17</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">2. Referenced Documents</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">17</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">3. Software Summary (Application, Inventory, Environment, Organization)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">17</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">4. Access to Software (Access Control, Setup, Inputs, Outputs, Errors)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">19</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">5. Processing Reference Guide (Gestures, Keyboard, Macros, Quick Ref)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">21</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">6. Query Procedures</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">22</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">7. Notes, Glossary & Acronyms</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">22</td>
+  </tr>
+  <tr>
+    <td style="padding-left: 18px;">8. References & Appendixes (Pinout & 3D Enclosure Fabrication)</td>
+    <td><span class="toc-dots"></span></td>
+    <td class="toc-page">23</td>
+  </tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ================================================================= -->
+<!-- PART I: PROJECT PROPOSAL                                          -->
+<!-- ================================================================= -->
+<div class="part-banner">
+  <h2>Part I: Project Proposal</h2>
+  <p>Project Design III: PJD 301B &bull; Submitted 08 September 2026</p>
+</div>
+
+<table class="metadata-box" style="margin-top: 5px; margin-bottom: 12px; border: 1px solid #c0c6cf; background-color: #f8fafc;">
+  <tr>
+    <td class="metadata-label">PROJECT TITLE:</td>
+    <td class="metadata-value"><strong>Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</strong></td>
+  </tr>
+  <tr>
+    <td class="metadata-label">LECTURER NAMES:</td>
+    <td class="metadata-value">Muwanguzi Mark Ntume and Chunling Du</td>
+  </tr>
+  <tr>
+    <td class="metadata-label">STUDENT NAME:</td>
+    <td class="metadata-value">Oratile Innocent Tshosetso (Student Number: 222883253)</td>
+  </tr>
+  <tr>
+    <td class="metadata-label">EMAIL & CONTACT:</td>
+    <td class="metadata-value">oratileinnocent.45@gmail.com &bull; 076 950 6870</td>
+  </tr>
+  <tr>
+    <td class="metadata-label">SUBMISSION DATE:</td>
+    <td class="metadata-value">08 September 2026</td>
+  </tr>
+</table>
+
+<h1>1. INTRODUCTION</h1>
+<p>
+In modern IT administration, remote troubleshooting, and digital workflow management, seamless cross-device control is essential. However, traditional software-based remote desktop solutions (such as TeamViewer, AnyDesk, and Windows RDP) present significant operational constraints. They mandate pre-installed agent software, elevated host administrative permissions, persistent internet access, and unrestricted firewall permissions. In high-security, air-gapped, or restricted environments, installing external client software is frequently blocked by host security policies.
+</p>
+<p>
+This project addresses these gaps by proposing a <strong>Hardware-Level USB Remote Access Gateway</strong> powered by an ESP32-S3 microcontroller. By emulating native USB Human Interface Device (HID) protocols directly at the hardware layer, the target computer recognizes the gateway as a standard, driverless physical keyboard and mouse. A mobile smartphone connects wirelessly to the gateway's embedded WebSocket server, transmitting real-time touch vectors and keystrokes. This project is worth solving as it creates an agentless, zero-configuration remote access bridge that operates independently of the target host's operating system, software permissions, or network firewalls.
+</p>
+
+<h1>2. PROJECT OBJECTIVES</h1>
+<p>
+The primary objective of this project is to design, construct, and evaluate a zero-driver hardware gateway that translates wireless mobile inputs into native USB HID events. Specific implementation objectives include:
+</p>
+<ul>
+  <li><strong>Hardware HID Emulation:</strong> Configure the ESP32-S3 USB OTG peripheral to natively register as a combined USB Keyboard and Mouse device on Windows, Linux, and macOS.</li>
+  <li><strong>Low-Latency Wireless Streaming:</strong> Implement an embedded C++ WebSocket server on the ESP32-S3 delivering sub-30ms round-trip latency for real-time touch vector transmission.</li>
+  <li><strong>Mobile Control Web Application:</strong> Develop a responsive HTML5 touch interface (hosted directly from SPIFFS/LittleFS flash memory) featuring a touchpad area, multi-touch scroll, right-click actions, and a virtual keyboard.</li>
+  <li><strong>Macro Execution Engine:</strong> Implement one-tap shortcut execution for complex keystroke sequences (e.g., Win+R, terminal scripts, system control shortcuts).</li>
+  <li><strong>Hardware Security Integration:</strong> Incorporate a physical GPIO kill-switch and status LED indicators to instantly drop wireless broadcasting at the hardware layer when activated.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h1>3. PROJECT DESCRIPTION</h1>
+<p>
+The proposed system consists of an embedded hardware dongle that bridges a smartphone and a host computer. Upon insertion into a host USB port, the target machine automatically enumerates the device as a standard USB human input device without requiring driver installations or administrative rights.
+</p>
+<p>
+<strong>Target Market:</strong> The system is designed as an independent prototype with applications for IT support engineers, system administrators managing headless or air-gapped computers, network technicians performing field maintenance, and accessibility users requiring mobile-driven PC control.
+</p>
+<p>
+<strong>Scope & Features:</strong> The project covers physical USB HID signal injection, local peer-to-peer Wi-Fi (SoftAP) hosting, real-time touch vector parsing, and physical security cutoff mechanisms. Out of scope for this initial phase are video feed capture (video streaming back to the phone) and Bluetooth Classic audio passthrough, maintaining a strict focus on low-latency input control and high reliability.
+</p>
+
+<h1>4. PROJECT TECHNOLOGY</h1>
+<p>
+The hardware and software technologies selected for design and implementation include:
+</p>
+<ul>
+  <li><strong>ESP32-S3 Microcontroller:</strong> Dual-core Xtensa LX7 processor with native USB OTG hardware support required for USB HID stack emulation.</li>
+  <li><strong>Firmware Framework:</strong> C++ utilizing the Arduino ESP32 core and Adafruit_TinyUSB / USBHID libraries for native descriptor configuration.</li>
+  <li><strong>Communication Protocol:</strong> Asynchronous WebSockets over HTTP (ESPAsyncWebServer) operating over a 2.4 GHz SoftAP Wi-Fi network.</li>
+  <li><strong>Mobile UI:</strong> Lightweight HTML5, CSS3, and JavaScript touch-event handling library compiled into flash storage using SPIFFS/LittleFS filesystem.</li>
+  <li><strong>Hardware Peripherals:</strong> Physical tactile pushbuttons for hardware RF disablement and dual-color status LEDs (Wi-Fi activity and HID bus state).</li>
+</ul>
+
+<h1>5. TIMETABLE</h1>
+<p>The project will be executed in four structured development phases across the semester schedule:</p>
+<table class="data-table">
+  <tr>
+    <th>Activity</th>
+    <th>Description of Work</th>
+    <th>Start and End Dates</th>
+  </tr>
+  <tr>
+    <td><strong>Phase 1</strong></td>
+    <td>Requirements analysis, hardware component procurement, and ESP32-S3 USB HID stack prototyping.</td>
+    <td>01 Sep 2026 – 20 Sep 2026</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 2</strong></td>
+    <td>Embedded C++ firmware development, WebSocket server setup, and mobile UI HTML5 touch gesture engine implementation.</td>
+    <td>21 Sep 2026 – 15 Oct 2026</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 3</strong></td>
+    <td>Hardware assembly, GPIO kill-switch integration, system latency benchmarking, and cross-OS (Win/Linux/Mac) compatibility testing.</td>
+    <td>16 Oct 2026 – 05 Nov 2026</td>
+  </tr>
+  <tr>
+    <td><strong>Phase 4</strong></td>
+    <td>Final data analysis, PJD2316 report compilation, visual schematic design, and project presentation defense.</td>
+    <td>06 Nov 2026 – 25 Nov 2026</td>
+  </tr>
+</table>
+
+<div class="page-break"></div>
+
+<h1>6. BUDGET</h1>
+<p>The proposed itemized budget for prototype fabrication and component procurement is presented below:</p>
+<table class="data-table">
+  <tr>
+    <th>Items</th>
+    <th>Supplier</th>
+    <th>Quantity</th>
+    <th>Unit Price (ZAR)</th>
+    <th>Total (ZAR)</th>
+  </tr>
+  <tr>
+    <td>ESP32-S3 Dev Board (Dual USB-C)</td>
+    <td>Micro Robotics</td>
+    <td>2</td>
+    <td>R 185.00</td>
+    <td>R 370.00</td>
+  </tr>
+  <tr>
+    <td>Micro SD Card Module (SPI)</td>
+    <td>Communica</td>
+    <td>1</td>
+    <td>R 45.00</td>
+    <td>R 45.00</td>
+  </tr>
+  <tr>
+    <td>Tactile Push Buttons & LEDs</td>
+    <td>Communica</td>
+    <td>5</td>
+    <td>R 5.00</td>
+    <td>R 25.00</td>
+  </tr>
+  <tr>
+    <td>Breadboard & Jumper Wire Pack</td>
+    <td>Micro Robotics</td>
+    <td>1</td>
+    <td>R 85.00</td>
+    <td>R 85.00</td>
+  </tr>
+  <tr>
+    <td>Custom Prototyping Enclosure (3D Print)</td>
+    <td>Local Lab Service</td>
+    <td>1</td>
+    <td>R 120.00</td>
+    <td>R 120.00</td>
+  </tr>
+  <tr style="font-weight: bold; background-color: #e2e8f0;">
+    <td colspan="4" style="text-align: right;">Total Estimated Budget:</td>
+    <td>R 645.00</td>
+  </tr>
+</table>
+<p>
+<strong>Budget Management Strategy:</strong> Procurement will be sourced locally from certified South African electronics distributors to avoid import customs delays. Hardware redundancy (2x ESP32-S3 boards) is budgeted to mitigate risk of component failure during breadboard prototyping.
+</p>
+
+<h1>7. CONCLUSION & REFERENCES</h1>
+<p>
+The proposed Hardware-Level USB Remote Access Gateway provides an innovative, agentless approach to cross-device computer interaction. By shifting remote control functionality from software applications down to physical USB HID emulation, the project solves long-standing challenges associated with administrative locks, OS compatibility, and firewall restrictions. The structured timetable and conservative budget ensure full project delivery within the Computer Systems Engineering diploma requirements.
+</p>
+<ol>
+  <li>USB Implementers Forum, “Device Class Definition for Human Interface Devices (HID),” Version 1.11, 2021.</li>
+  <li>Espressif Systems, “ESP32-S3 Technical Reference Manual,” Version 1.2, 2023.</li>
+  <li>W3C, “The WebSocket API – W3C Candidate Recommendation,” 2020.</li>
+</ol>
+
+<div class="page-break"></div>
+
+<!-- ================================================================= -->
+<!-- PART II: TECHNICAL DESIGN DOCUMENTATION                           -->
+<!-- ================================================================= -->
+<div class="cover-container">
+  <div>
+    <div class="tut-logo-container">
+      
+<div style="display: inline-flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 5px;">
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIgAAACBCAYAAAAbtfKaAAAWj0lEQVR4nO1dTYhlRxW+q8FtGmY1MIswGmxkSBoXPZqNQlBUEFcuRMRAxiwkzGJEm6a1mSZITCAugmLMQmNA/CGJEDAagjEuFJnEINEEE/IjJMRgNGo0BPIo852qU/9Vt+r+d/dbHN573e/dW7fOV+e/TjVCiGZNa0rR7ANY07Jp9gEsj1YLGMNyaPYBLJ+ON2BmH8A8DHeZ/o/X32h+/shj4q4fPkyE9/jbGiTHDiA2OFbNY398Xnz+S98TTXNB0ukd0ZzZFc3GRdE058XHrv+WePS3T4v5x70GyITgkPSN7zwoms09SecuGdo+MO/xv3cAs//NByyJcrykyewDmB4gotm59UdSSmztG1DEiP93eockjX+d40CzD2BagIjmBz97RKoSGwAldHpHQOrM/xxrgIxGUBMf+PAt7ZIjQfgt7Ja5n2MNkJEIHkpXcNBvtvY9KXL0Vc3sA5iOVs3uzT+RXkotOBggm3vipi/fc6wM1tkHMBWBqWAueSZdAbK1T67vM8//7diomdkHMBWBqZ/7wp1SxXQBCGhrX3zo07dbAFlLkCNDvSWIAogrQdYAOUKkbJA+KiawQY4+zT6AKUl7MV0lyObesYuFzD6AKQkr/7qP32JAUunuIg7SzUA9vNHX2QcwHUkGIVOrI6k1dGaXMr32tY4yMA41QP773IvirVf/XpkbMd+jRB3iIW3qxsrF3HTpvg7gkO/f/t+bzX+efErgde65O/IAwSQ/d/PXxdM33Cgw6TEAtDEM78keAQBsaeJndQEiZXdIw7ReIgDMf9n5Ko3XgHpsWnmvswFkehHKAPl904g/nL1aPHvbHdbKrBP9sCfIswFIUA+CDC/Vgsj3yOD2yb28cPc94vFrrqWxPvWZ6ycCyGoJAFk5A5nS7WOAXG5OiMvvupImH0wIpUnd8wAIv/zVn4jw3g2nlywE839IDQACY8MYLzcnJwYI88QGSjew9ASIaNzJnBYgj2+8l+hyc4qY8eebLggwp+uz9PuOaAAAlm4AxeNXXEU0LUCEBoiRft0lSS9wQERPHVUMAKKYgPesdiDaXWaMNbaVHtMrD/xCPPmRT0qJxmNS45oeIGbx9uVPZ4AAoSi+mRIcWYBoZpzSDAHThgeJK02g2iC5WJUEY5pcgrgqUfJoVaEqewNEEuvqqYCRBYhSNfq9YgrAAuYNO/nmM8bx2JXvkaB815VRcMwjQYQjRdyFXAeSTjfHTU3QKJy4MZjhA4REuQ0MiyHu6j1B34U0GSIOgWu89uhvjIHccv96CTLkXEpJD165EeBRAGKQd+f3Hx5hO4C8/urtN7wHcBEPBr347e9qw5RWrr9qfQYpZiIWAeZ2BSrUCWIa0gg9FdhAvjTj+wIg+J0EiC/ujacxbCGSuQakPXgWm8/BAcJ7ScaJgayafz/zU/Ha774i3vjrQ0KCJXxgTDQYDaBwnIEY5qsbj3nsWSB2UmbEGiPUvlf2PpZXBYBA2mGscXDI+2CxYWsFmDicR+jeB1loKUVGBYhoUA+BfMZwSHcf6PUn7xIv/bgRL9+/IV799WcFPqeAIlTMwfYgyDaJMZCZp4xJfD+vduR9wFxIHrZpoqpEA+Ok40lhbLnrwzZAEdPZ626mwByCdsOGDAwYoGbAu1q+Vd0Q0gMZTf/mQz6QDZCX723oPQhgefPVJ0TunhzWlobjybTxaK1yE2ALr4vrQWoE3okDtlOaAKQwDuNeF6v4i/t3yzC+nQ/a3LMAMqTHZV7fd/WOqI2NVN0MSHelx8gAsYiB8tKDHxRQQ2/964WkZMGqxQqGB2NU0Mlg5eNvLkBC6SQBcspTVad0BBfGJ9RP2gCVIX3MG1YwhfH9wmlVjDS8BHEJKgw8HBgg8kIwdPAQ7t+nA4gmJVVevv+s+OcTt2ZtFaEMSzAQjKTwPKugKEDc8WiAKEOYPSKoJ7YtXBXiph9gW2AX3/s/dbvM8djbPP16lAkAQgzfuGg5GO38KwTIioyc+pT3CACxgEKkbBWABVIlBRQ2bNlFZioBCH8X6gvXyKkRditpUzgAUFJWMAlA5BhRdA1eli7wootDbyHjOX5grAIgUbCcJbBAquTiKAALZVqvuMpze0Ppw9ICv8nFUaBGAAroeS5wri1nHA8grssL0JbysuDCaif8uUsDG1ADAiSqgja0VHFVUPwZ2yY29j2AAp4IeSGwLfpUzE+kYnB9qJnS2tqyC76zGuCnj2N3DAwQHyj3NjquklNB7QvFzAdWH3UIgJQo6RKwMICQ+tvaL7pX6xdIJDXnR4p9jAiQiAp65aFPkFSR7nLd2CAt4AXozVewLWyDsy9NAhATEwFPwds2nrZelFyzc5cmSsyNBJCErQJ32YT2Y5O0Ik8ERh2pEW4406EifhkAkUQ25eaeFziLz0H2QqRemvMdNwv5NyuRPCMDJAKWnDSB1NDA6LOfZjSAdEvh47k4JtNWa5u5KYuiC8r+qJcG+YeJr9jJAKJAYgASjgcTSTGMIWyMHBUHylJzVwoQM/9Ui9tcaN3Kkb0IfGYM3E3tlw0CD8o1nvGOgT5qw1zMogAyJjhUdX1eUrvzBdUIw9uoybpFC3sKdhR4HOdHEiCS2HvB4MtT+ysHILxZGuIMUkheJ4f+VQOGIZzOoXUOho0PkLgoHh0gMHab86TKpNHoLxp3TBgvDG3YUHgGzJXrnZUROR9KcuXKDPIX2NoX2KpYv93QBQhNsDLuMBFwEUOpYggrAg8N9/RllYfRdsNhAojfNdGyN2irxcZFStyZwu+4CsF8ABQAg2NsK8+sC0BwT7KvtvYtbyakpBjinfDS0q2PGTgA8fU3rZoLNECudsoF4XjVYDJcb2ThANk2jWfYLcaCwwJJe4VmgUB9ZKVpD4Dg2WifsrJ9qiUI+ftndsnvT/24GCApvcuBps09ClOHe1JEVO9qEWutpEUAhI1ZGxSWik3bY/I9g4Ikp1XqkBt/V4DgfsTjzT3icUrN5CdG9cMYHCA+UCyxi/vid5AsuXbYmBQGC+IaeoXVgGVIgNjNdzcualUKu8tUcsVBD1BoFVLzDJ0BsjJCYHOPnjG1PSJ6AdoBr1aBcXFHAEhMX7O9oto9sWTJTTAmCIzGyqsybvsCxB6zat8NmwKgwPPnXFaAG+P11WaVB9cTIMjOs9RLRcqjF6D4h4oadmt50KPlk72BGoNnUW3tlc1Xp69o8qWVfzZvs9QCJAJibkslJzid9AOQGcTa8O5rS/UECBZ/yGeXohfQ7RE294ri9YMCJAccXAtZ03OXtKGX24PK4htgYfHt6PVagKjJLFODKy3ZKLZjG5sDemF9AEKxEPVMJrvbIkHwwLqX15ldS/TU3XxwgPg2CwCseqjzNoyczQJGsa5nmwVUFGqH+jh3iax9gCKXl2JJAVCwIT1aPKeXkepqilQ9bBQgdsayfgPwiABJGYVndomRGDdWgsvAUKowWEwhdPz5uMCYQdFmNGtQQLUN5YqPCBDqW69Upene6M5XdFIoxL50gKTcTHU/qIFQBYiIOiopGEoHsAA0NjRHj/wODBByRhRAjCfTIkEoFWzlBw4NQGzjlg1c1RiGDwYKPYs2kISAYPea7Jop0gEjAoQL0TFXkMCxiHkwGVwrwHq+vg5kRgkSAw0bl8q4ha7FynH9/jRAbFBID+Ts8Mbm3CpGSd8Yr72VZAqUGSCLMlL7SpftAy1VsGIwQW49RJhIhI0CJiwGFGMAJNAWGQkCUUxWu1p59aWGCwGIv/dE5X/wOcz/tEsQ2BqO9JhLrQwCEKvehwHi7JdJAmQl9ZJy6/Dj+iYxCwCIHdDa2qftovBG+p/SsNKJw9Yg3KIBIkmf26cAEsvqtgIkFUBZHEDsBJkK0+P+YYSz5DliUiX87IfLD48X42bsuwNka58ilosFiJ8VVkYoniGUFjl3tnZywxiIzsJa+4iXDhDe/uACpMXN1QBRIto97XEhALGDZMqNde2KNDORx8HWyRhhJ12Owg3aoRsMFaRzQbXJt4kBogOiZRIkDhBTD1J381EAwsk7eCKnd0i6ARQyeZcLgJn3AALaQ9QSNnrnm+KFKgiMI3vFDrcPqYJ6AWTV6IAo5rYUII4Xo3R5fSn+QEeAsfpQ10AFFCRaaY0sVry/6gGQoFVlpr8YE/c586VRabtNzuQOWhXXCSByjLqizJIgBV6MioMwQFQNaV2wbIB0//aBzrEgBMxJsjb1IazG+dicjY3XaP1QDJBcn7PmRAAQfOZuQmEriLgq4vC8BksfNdTDiwEYuCaVJUhRHMSJpKpVnCtq7QUQv1aV1YcqdYy32oyHx3nHPlo02C0bxgQIQMH3gfRBwxpuPZUes/mbnTTslPXtAZDgcKXNvTaACAMQj2mmQ95IEoRD4epc2nQRcygxwCTuJMT9x7jtlAsQY4MMDRC79xl1I7rmWhqT//3UfHEwDtlgxwtqA0sPFaNrfqzFWgQQXQPh9c4aFCBWRRaCWPFTFdIqBEx2WmFyDzHPhphKgvj9yxgs3FQP/UXiDe3iNovZ8tFeEdcFIAFvnGxuAUBo3yYbL8qTKe/5HQGIbVds7hEAATqTC4lNmrkPgwIM4lMUdI9Uqyep32RuFoBEGt3xeLmzYgiWdEUcB+OiBc3VADEGquPBZM4DDi4SZawjfioBoiq/cB2u/opLi/Az7ApMKFZg0IwuR3MDJOENsVTBs8BWCu2VVMTX2Ct+TWs5QAz4yFO1+6VlTvOMMoaKWbn/xbbMgLpN4csAwj1A80GsdDwBkyj1+omws/GSAdIyNqmCTuh+remFF86RXREnd9qdLQCIex2qRcWitQACie7GkxISRFgbe7WnAYRduq+gBdXKAQiovj+6uYbsTBi3Lw4tQCK2StmchCBi4zZsX56eV6eklG3CM7teq+4WgPC+XN/TKMuG+m5o/OGqAOIxvpUhSweIZTdBMtYtoBhgShOQ0v7QuTYrzJDavRC9iN7Ya8crEqHYMpDUSo8EQI6SBOkFkPh8lQCE4h9WIJTLDVM2ZvQigRhSasa0LOqC8tqHXgNkODJz6oQwLC+1cG+u+Sd5IHZnHbzqlkWig3ToIUG6iPA1QKILn6vqbICYjH1IyYuSoWrbIdECoqEBspYgYwKE6j/swKUCSMpATUgQKycT2bQsm8F3sS/WAJkPIFJ6IGod5MJanI8sg5xkmlXnOd5hhmsVM4bkEHZyzuap+pzjZRYgdK6Jf0KBavYy3jn0awkyNECisQ/Fy7YDGrI3IJ/ZNmosaVK/678HQNYSpBfpHXS+emkutKZQssijL8RqOJQUaWvC2h0cawkyFIFHlHz1jVP16i/KCoDIH1DdAMftbaCc2bXaWo4BkjVA+s+jkh68U9IGyOkd5b3k+dd6I/JmEkdotTVhHUyCrFVM5zl0AmPeAnfbPXQCSKS4pHP4fS1BpgVIRvo76f18xLvopnxKUbRccOPiGiCLA4iVlEuUeJYu7CJm4WbcMjFWPmhaZaaRWAeOtYrpCgymqFu7fRDJvQwAEBELvXs3Hc7tXUuQfgtrJYNiqQLxaGg9zbPiQQBxSYNHbbAqr1utlCBrgBRLEF10HgtPbB9QkXiueX9HgFhGj11p5lnFJio3sARZq5gi/gQxDz9VcnqnultD9WCS58CqyJwrvrrWgkQkyFErORwBIFRLzNViEekB3tWAoxIg8qLUtihmHXO+JgjfdgGJCAGyliBZaSsPn4ykRSxvs0uStXowjhiLDSbYhNMdJLwHRu9/YUYc9ppUNUbeBlHLNH+esCAplZ+S7KoasMu5x52Qq/dVxJCqBpQrYyt9cOyLAYPRfsHZE9NWuLxwgDAwsOXBnPzdzbAPNkHF+OE0I6xbsJ1Fm24EnxqUapPd7ZjP8AEwkZhQ2avjlNwnc0Wi0n0pAHGq1+WeYXQD4KPeu829Cw6S5qkgprI7pGHaLWfWmXkOcmOqJnpQX+kA099DawdMMMAiN1VFbJQlAIRUiNw7DFA8fcONtJMuveWybv51jYefiMuGH+qpI0DkIKmVs70DLwES97jPvpFWw2gwDBOvN0pbe3VnAQjvx7W2WOL+Ye+QPnEi63j1HDi2/T633e7ZAyBW1VksIeTpwPBM2D4ejvkdRDWkyrO33REAZUqA2Ju0YVzjf+G+274BRG/PcwoY1sLse+8eq9kwSreKyg0YgbRO6qZMovBniHFmaBYgvkcU85Ks1xxAGJjYS5y2Lfo/r86JtUltp9a0Hw3CIMocloDk9E5CJw5VbOQyj/V+DCBs6LbTSQ2AGEBgC/n3GK6Iyvxe73bMgWPb7JTr3zS4N0DcCdD7eXPulpIk4Va/oSYzvI7R/cZ1BnC6kO+S4trx4u2+z2P/fiXDCtsH7e281Pyb5sH9F94Aq9UMQh9xlTOctk25vTwnbSiAlI1RWN0Pa2m8Sv74eKGOaU6tOcsuvs09q4wwfO6ZACKc1UsGVM669tpbmr4UIiIFxgRNf6CNc33PGOXDE3MLzgopDL3gRpk8io+Utr9U7S7jx4gtDSDTgE/3qm2bQ0tymI31w87bCA+5Mn56CUisXuuI+LUf0XHUyEhLGJYUoc4l3SILTG6+HmfORgGIsIM5pSBRgR1IH/cM16MGllXwTJgrPDMdwdrmpXiSw01nLB4g9iRYBSy5oI4PEqVz4e/nTq883OSqE62Sc4ZoJK5kMrTCkUQLB0jIyKKwcMzTUb0rhvLp5wSCTwC/Xjy58ECMVCI0Jo2GppEBYt7T4TU8EaX61Tryg5vtdssOLwEc0jbTwGjOB61Gi2y1rf1ICH08yTrRJMlXqrZmppeChEn1W0Xda/rAoLnBEF/RGCuenSRpiXeSAAe3FJ0KHBMAxJ5A+SDkwjFIYjZIgdXOaWxY/Igaxrs1h1JsGBCkns39P8YEIGO1axujZGHE6knV76RNNm2MaCKAuBOKySOLPdKOsdiY9c6RgWTJg6Wvvm7/Pe6Nuk8ErOgsFgvQVYvA/u7GRfJu5lKts9yUJ1x3vakx0FITCUaoM3ExoTiNyj5te8gwOV8ThHvgXu/+6Ndk/AJjKIl+ltheW/tWOkJMolIWABBXREJs6vqGGgN2+8CVPl7nPn1OrjpEGfofgThMOJiK+zLBRoiR/R38Br+FyuAW43z96NhrJaM3dvcEjGMFkBAsHCjinEK1OC6ZdJYwTNbmIkgcnwgAvJL5QAJ12FEgIYYaqwqSuadrzRv7mRkgLmHVkjsM26SPiG6TNjb5Ko4/23/n33aRCiWkUg149n7bRY4cQGJG34rUDln+WLF+M98hGTQm00slmzqXb6nJytkHEAeNfA+vhIJKtls8BzOHBMX2gXZb8WymqDh8/iXQ7AOIA2QVAIVUD9soLFXmWv1dQMEHNqrTwd0j44dww48NQHygmM8Qw6iY0jEUu9PAkoBijwdjVLEMPm0r3AKxynxeA6QSLCsdf6AtF8hpMFiGNmy7EHtM5AKfpzFyPGb+eTzSAIm9SoK4Rtgd0Uvdj9w6WTMAji9xYvGLHG1b3g6H0NUJnpAUnAKIg3w50uEIASQGljhBhHNACwE4GIK6MxKkDJMNnpyrywCwf6sSZ/C0cA8Ags/lm39+jj1AcsAJE2ZgGkQ8EmdgIqKpAA8ilYiIAkBgNBhuE/4GwncYBByJxbVwzfCgRnFoJcUxAIgPknxSzaZUqN3/Xv6e02ZZ1wBZ0yJo9gGsadk0+wDWtGyafQBrWjb9H79h028z2iaCAAAAAElFTkSuQmCC" style="height: 80px; width: auto; object-fit: contain;" alt="TUT Emblem">
+  <div style="text-align: left;">
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 20pt; font-weight: 800; color: #003366; line-height: 1.15;">Tshwane University<br>of Technology</div>
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 11pt; font-style: italic; font-weight: 600; color: #C62828; margin-top: 4px;">We empower people</div>
+  </div>
+</div>
+
+    </div>
+
+    <div class="faculty-title">
+      FACULTY OF<br>
+      INFORMATION AND COMMUNICATION TECHNOLOGY
+    </div>
+
+    <div class="department-title">
+      NATIONAL DIPLOMA: COMPUTER SYSTEMS ENGINEERING
+    </div>
+
+    <div class="subject-title">
+      PROJECT DESIGN III: PJD 301B
+    </div>
+
+    <div class="document-type">
+      DESIGN DOCUMENTATION
+    </div>
+
+    <table class="metadata-box">
+      <tr>
+        <td class="metadata-label">PROJECT TITLE:</td>
+        <td class="metadata-value"><strong>Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</strong></td>
+      </tr>
+      <tr>
+        <td class="metadata-label">LECTURER NAME:</td>
+        <td class="metadata-value">Muwanguzi Mark Ntume and Chunling Du</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">STUDENTS NAME:</td>
+        <td class="metadata-value">Oratile Innocent Tshosetso</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">STUDENTS NUMBER:</td>
+        <td class="metadata-value">222883253</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">EMAIL ADDRESS:</td>
+        <td class="metadata-value">oratileinnocent.45@gmail.com</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">CONTACT NUMBERS:</td>
+        <td class="metadata-value">076 950 6870</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">SUBMISSION DATE:</td>
+        <td class="metadata-value">15 September 2026</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="cover-footer">
+    Department of Computer Systems Engineering &bull; Tshwane University of Technology (TUT)
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<h1>1. INTRODUCTION</h1>
+<p>
+<strong>Primary Intent & Engineering Purpose:</strong> This technical design documentation defines the architectural blueprints, firmware decomposition, electrical interconnects, and protocol workflows for the Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation. Developed as the principal technical deliverable for Project Design III (PJD 301B), this document specifies the engineering mechanisms necessary to construct a working physical prototype capable of bridging a handheld mobile touch interface to an air-gapped target PC as a native, driverless USB peripheral.
+</p>
+<p>
+<strong>System Demarcation & Technical Scope:</strong> The engineering scope centers on the implementation of the Espressif ESP32-S3 dual-core microcontroller, leveraging its on-die Full-Speed USB OTG physical transceiver for direct differential signaling (D+/D-) on GPIO pins 19 and 20. The firmware encompasses an embedded C++ stack utilizing FreeRTOS multiprocessing, TinyUSB descriptor generation, an isolated 802.11 b/g/n Wi-Fi Access Point (SoftAP), and a browser-based HTML5/CSS3 touch digitizer stored within internal LittleFS flash memory. High-overhead multimedia features—specifically video feed back-streaming and host audio interception—are strictly demarcated as out-of-scope to preserve sub-30ms transmission responsiveness and avoid host-side software installations.
+</p>
+<p>
+<strong>Stakeholder & Academic Governance:</strong> This document is submitted for rigorous academic review by project supervisors Muwanguzi Mark Ntume and Chunling Du, internal academic moderators, and external examiners within the Faculty of Information and Communication Technology at Tshwane University of Technology (TUT), fulfilling curriculum evaluation benchmarks for the National Diploma in Computer Systems Engineering.
+</p>
+
+<h1>2. SYSTEMS OVERVIEW</h1>
+<p>
+The system operates as an autonomous, agentless hardware dongle that establishes a responsive human-interface bridge between a mobile smartphone and a target host computer. When plugged directly into a host USB Type-A or Type-C receptacle, the ESP32-S3 hardware natively enumerates as a standard USB Composite Human Interface Device (HID), exposing integrated keyboard and mouse collections that require zero host-side drivers or administrator privileges.
+</p>
+<p>
+Concurrently, the gateway initializes an isolated, high-speed 2.4 GHz SoftAP network (<code>SSID: ESP32-Gateway</code>). When an operator associates their smartphone with this local network and navigates to the default gateway address (<code>192.168.4.1</code>), an asynchronous embedded HTTP server delivers a lightweight, zero-dependency HTML5 mobile trackpad interface directly from flash memory into the mobile browser.
+</p>
+<p>
+Upon initialization, the mobile client opens a persistent full-duplex WebSocket channel over TCP port 80. Real-time touch coordinates, tap events, gestures, and keystrokes captured on the phone's capacitive screen are serialized into compact JSON packets and streamed to the gateway. The microcontroller's firmware parses these packets across a FreeRTOS inter-core queue, translates them into compliant USB HID report buffers, and injects them into the physical USB endpoint FIFO with guaranteed sub-30ms latency, enabling fluid cursor manipulation and text entry while bypassing host OS security restrictions.
+</p>
+
+<div class="page-break"></div>
+
+<h1>3. DESIGN CONSIDERATIONS</h1>
+<ul>
+  <li><strong>Sub-30ms End-to-End Latency Target:</strong> Fluid cursor movement requires tactile response latencies below 50ms to prevent perceptible operator overshooting. Total system latency (<em>T<sub>total</sub> = T<sub>touch_sample</sub> + T<sub>ws_transmit</sub> + T<sub>esp_decode</sub> + T<sub>usb_poll</sub></em>) is engineered to consistently remain below 30ms through 60Hz digitizer sampling, asynchronous non-blocking sockets, zero-copy memory dispatching, and a 125Hz USB polling rate.</li>
+  <li><strong>Zero-Driver Universal Compatibility:</strong> Strict compliance with the USB Implementers Forum HID Class Specification v1.11 ensures that the hardware gateway is recognized out-of-the-box by Windows 10/11, macOS, and standard Linux kernel distributions without administrative privileges, driver installers, or background helper daemons.</li>
+  <li><strong>Air-Gap Integrity & Physical Radio Cutoff:</strong> In high-security IT rooms and financial server enclosures, foreign networking equipment is strictly restricted. The gateway enforces air-gap isolation by operating strictly in local SoftAP mode without WAN uplinks or bridge interfaces. To provide emergency physical security, an active-low tactile push-button tied to hardware GPIO 4 triggers an immediate interrupt that terminates RF broadcasting within 2ms.</li>
+  <li><strong>Power and Thermal Budgeting:</strong> The hardware operates solely from the host 5V VBUS rail (5V &plusmn; 5%, maximum 500mA according to USB 2.0 specifications). Measured peak power consumption remains below 280mA (1.4W) under continuous Wi-Fi packet transmission and active USB enumeration, allowing safe passive heat dissipation inside a compact 3D-printed enclosure.</li>
+</ul>
+
+<h1>4. ASSUMPTIONS AND DEPENDENCIES</h1>
+<p>
+<strong>Related Software and Hardware Stacks:</strong> Espressif ESP32-S3-WROOM-1 module (Xtensa LX7 dual-core @ 240MHz, 16MB SPI Flash, 8MB PSRAM); host computer with standard USB 2.0/3.0 Type-A or Type-C port; Arduino-ESP32 Core v3.x, Adafruit_TinyUSB framework, AsyncTCP, ESPAsyncWebServer, and ArduinoJson v7.x; smartphone equipped with a modern W3C-compliant browser supporting Touch Events Level 2 and the WebSocket API.
+</p>
+<p>
+<strong>Target Operator Characteristics:</strong> Field technicians, enterprise IT administrators, and accessibility users requiring emergency input access on secured workstations. Anticipated future extensions include reading automated Duckyscript macro payloads from an optional SPI MicroSD card slot and fallback BLE HID pairing.
+</p>
+<p><strong>General Constraints:</strong></p>
+<ul>
+  <li><em>Hardware & Software Environment:</em> Complete platform agnosticism on the host side without host-installed background services; 2.4 GHz wireless line-of-sight range bounded to 10–15 meters.</li>
+  <li><em>End-User Operational Environment:</em> Restricted server racks, air-gapped forensic terminals, and noisy RF datacenter environments.</li>
+  <li><em>Financial & Component Availability Constraints:</em> Strict total bill-of-materials budget capped at R 645.00 ZAR, with components sourced from reputable local South African electronics distributors.</li>
+  <li><em>Requirements Specification Alignment:</em> Rigorous verification against all academic outcomes and technical competencies established for the TUT Computer Systems Engineering diploma.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h1>5. GOALS AND GUIDELINES</h1>
+<ul>
+  <li><strong>Operational Simplicity & Zero-Dependency Delivery (KISS Principle):</strong> The mobile web application is engineered entirely with zero-framework vanilla JavaScript and pure CSS3. Bypassing heavy client-side frameworks (such as React or Angular) guarantees instant load times (&lt;100ms) directly from the ESP32-S3 LittleFS partition on any mobile browser without internet access or CDN caching.</li>
+  <li><strong>Throughput Maximization vs. Deterministic Memory Limits:</strong> Real-time responsivity takes priority over speculative memory caching. The embedded firmware employs asymmetric task pinning across FreeRTOS cores (Core 0 dedicated to wireless socket processing, Core 1 dedicated to USB HID formatting) and relies on fixed-size circular ring buffers, preventing heap fragmentation and ensuring microsecond-level timing predictability.</li>
+  <li><strong>Ergonomic Tactile Parity with Physical Touchpads:</strong> The web touch engine faithfully mirrors the physical sensation of modern laptop hardware. It incorporates a non-linear velocity scaling algorithm (<em>V = &alpha; &middot; (&Delta;D)<sup>1.2</sup></em>) that smooths minor physiological tremors during slow precision tracking while enabling rapid cross-display navigation during flick gestures, complemented by dedicated multi-touch scrolling and tap gestures.</li>
+</ul>
+
+<h1>6. DEVELOPMENT METHODS</h1>
+<p>
+<strong>Iterative Hardware-Firmware Co-Design Paradigm:</strong> Development is guided by an Agile milestone methodology combining rapid electronic breadboard prototyping with continuous firmware module integration. Hardware differential routing, RTOS task synchronization, and client-side gesture capture are validated concurrently at each design sprint to de-risk physical USB bus timing dependencies early.
+</p>
+<p><strong>Formal and Published Engineering Standards Adopted:</strong></p>
+<ul>
+  <li><em>IEEE 1016 Systems Design Documentation Standard:</em> Governs the structural decomposition, subsystem abstractions, component attributes, and functional flow models documented throughout this project.</li>
+  <li><em>USB-IF HID Specification v1.11:</em> Establishes the authoritative binary descriptor formats and report buffer structures required for driverless operating system enumeration.</li>
+  <li><em>IETF RFC 6455 WebSocket Protocol:</em> Specifies the full-duplex, low-framing-overhead transport standard governing bidirectional streaming between browser and microcontroller over TCP port 80.</li>
+</ul>
+<p><strong>Comparative Evaluation of Alternatives Considered:</strong></p>
+<ul>
+  <li><em>Traditional Waterfall Lifecycle:</em> Rejected due to rigid stage barriers, which introduce severe risk when attempting to synchronize real-time Wi-Fi packet throughput with physical USB differential signaling.</li>
+  <li><em>Software Remote Desktop Solutions (VNC, RDP, TeamViewer):</em> Evaluated and rejected because they mandate host-side software installation, network firewall modifications, and elevated user rights—violating core project constraints.</li>
+  <li><em>Bluetooth Classic HID Mode:</em> Considered but discarded due to OS-dependent pairing dialogues, high connection negotiation latency, and inconsistent report delivery rates compared to dedicated local 802.11 WebSockets.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h1>7. ARCHITECTURAL STRATEGIES</h1>
+<ul>
+  <li><strong>Toolchain & Language Architecture:</strong> C++ utilizing the Arduino ESP32 runtime and ESP-IDF hardware abstraction layer was selected over MicroPython to attain deterministic execution speed, direct hardware interrupt vector management, and native FreeRTOS multiprocessing primitives.</li>
+  <li><strong>Software Component Reuse:</strong> High-performance, community-validated open-source libraries are integrated: <code>Adafruit_TinyUSB</code> for USB descriptor generation, <code>ESPAsyncWebServer</code> and <code>AsyncTCP</code> for non-blocking asynchronous socket servicing, and <code>ArduinoJson</code> for zero-allocation stream parsing.</li>
+  <li><strong>Hardware Extensibility Strategy:</strong> The physical circuit layout reserves dedicated SPI bus lines (GPIO 10, 11, 12, 13) for an optional MicroSD card daughterboard, enabling future offline storage and execution of Duckyscript-compatible administrative macro routines.</li>
+  <li><strong>Client Interaction Model:</strong> A full-screen zero-dependency HTML5 canvas intercepts W3C Touch Events Level 2 (<code>touchstart</code>, <code>touchmove</code>, <code>touchend</code>), translating touch displacement deltas into relative cursor movement vectors with dynamic acceleration curves.</li>
+  <li><strong>Physical Hardware Interfacing:</strong> Direct differential routing maps native USB D+ and D- traces directly to ESP32-S3 GPIO 20 and 19 using the internal Full-Speed USB OTG PHY, eliminating external USB-UART bridge chips (such as CH340 or CP2102) and reducing propagation delays.</li>
+  <li><strong>Fault Tolerance & Link Recovery:</strong> An embedded Hardware Watchdog Timer (WDT) set to a 3-second timeout reboots the microcontroller upon unexpected thread lockups; WebSocket heartbeat pings (5s interval) detect broken wireless sessions; and USB bus reset ISRs manage host re-enumeration.</li>
+  <li><strong>Dynamic Memory Protection Policies:</strong> Statically pre-allocated circular ring buffers (depth: 32 report structures) absorb rapid input bursts without dynamic heap allocations, while LittleFS partitions stream static web assets directly into client browser caches.</li>
+  <li><strong>Isolated Network Architecture:</strong> An isolated 802.11 b/g/n SoftAP (<code>192.168.4.1</code>) with captive DNS routing handles local client connections, remaining strictly detached from wider area networks to enforce hardware-level air-gap security.</li>
+  <li><strong>Multiprocessing Task Allocation:</strong> Dual-core asymmetric processing under FreeRTOS: Core 0 executes the Wi-Fi MAC, LwIP TCP/IP stack, and WebSocket parser; Core 1 formats HID reports and drives hardware GPIOs. Tasks communicate via lock-free atomic queues (<code>xQueueSendFromISR</code>, <code>xQueueReceive</code>).</li>
+  <li><strong>Hardware Emergency RF Termination:</strong> An active-low hardware push-button tied to GPIO 4 triggers a high-priority interrupt executing <code>esp_wifi_stop()</code>, terminating RF broadcasting at the physical layer within 2ms.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h1>8. SYSTEM ARCHITECTURE</h1>
+<p>
+The system architecture is organized into three decoupled operational tiers, isolating client gesture capture from deterministic physical USB hardware dispatching:
+</p>
+
+<pre>
++------------------------------------+      +------------------------------------+      +------------------------------------+
+|        LAYER 1: MOBILE CLIENT      |      |      LAYER 2: ESP32-S3 GATEWAY     |      |        LAYER 3: TARGET PC          |
+|                                    |      |                                    |      |                                    |
+|   HTML5 Touch Canvas (60Hz)        |      |   AsyncWebServer & LwIP (Core 0)   |      |   Native OS HID Driver             |
+|   Gesture & Velocity Math Engine   | ===> |   Packet Parser & Atomic Queue     | ===> |   Mouse Cursor & Keystroke         |
+|   WebSocket Client Serializer      |      |   TinyUSB Composite HID (Core 1)   |      |   Ingestion                        |
+|                                    |      |                                    |      |                                    |
++------------------------------------+      +------------------------------------+      +------------------------------------+
+            [Wi-Fi SoftAP / WS]                               [USB OTG D+ / D-]
+</pre>
+
+<p>
+<strong>Rationale for Decomposition:</strong> Partitioning network socket ingestion on Core 0 from hardware USB interrupt endpoint servicing on Core 1 ensures that wireless frame retransmissions, client beacon intervals, or radio interference never introduce timing jitter into the physical 125Hz USB polling loop, guaranteeing stable sub-30ms user response.
+</p>
+
+<h2>Subsystem Architecture</h2>
+<ol>
+  <li><strong>Network & Communication Subsystem:</strong> Manages 802.11b/g/n SoftAP broadcasting (<code>SSID: ESP32-Gateway</code>), assigns local IP leases via DHCP, and hosts an asynchronous HTTP and WebSocket server listening on port 80.</li>
+  <li><strong>Touch & Input Processing Subsystem:</strong> Executes client-side inside the mobile web browser. Captures raw touch vectors, filters low-frequency tremor through a deadband threshold, and applies non-linear acceleration curves to displacement deltas.</li>
+  <li><strong>USB HID Translation Subsystem:</strong> Deserializes JSON command payloads and generates standard USB HID reports, injecting mouse data (buttons, &Delta;X, &Delta;Y, scroll) and keyboard reports (modifier flags, keycodes 1–6) into the USB endpoint FIFO.</li>
+  <li><strong>Hardware Safety & Power Subsystem:</strong> Regulates the host 5V USB bus line to 3.3V, monitors the active-low hardware kill-switch interrupt, and drives status LEDs indicating Wi-Fi client association and USB transmission activity.</li>
+</ol>
+
+<div class="page-break"></div>
+
+<h1>9. HARDWARE INTERFACE & PIN ALLOCATION</h1>
+<table class="data-table">
+  <tr>
+    <th>Signal / Net</th>
+    <th>ESP32-S3 Pin</th>
+    <th>Hardware Mode</th>
+    <th>Functional Description & Interconnect</th>
+  </tr>
+  <tr>
+    <td><strong>USB D-</strong></td>
+    <td>GPIO 19</td>
+    <td>Native USB OTG</td>
+    <td>USB 2.0 Full-Speed Differential Data Minus line.</td>
+  </tr>
+  <tr>
+    <td><strong>USB D+</strong></td>
+    <td>GPIO 20</td>
+    <td>Native USB OTG</td>
+    <td>USB 2.0 Full-Speed Differential Data Plus line.</td>
+  </tr>
+  <tr>
+    <td><strong>RF Kill-Switch</strong></td>
+    <td>GPIO 4</td>
+    <td>Digital In (Pull-up)</td>
+    <td>Active-low push-button; falling edge ISR terminates SoftAP.</td>
+  </tr>
+  <tr>
+    <td><strong>Wi-Fi Status LED</strong></td>
+    <td>GPIO 2</td>
+    <td>Digital Output</td>
+    <td>Blue LED; blinks when idle, solid when client is connected.</td>
+  </tr>
+  <tr>
+    <td><strong>HID Activity LED</strong></td>
+    <td>GPIO 1</td>
+    <td>Digital Output</td>
+    <td>Amber LED; strobes on active HID packet transmission to host.</td>
+  </tr>
+  <tr>
+    <td><strong>MicroSD SPI (Opt)</strong></td>
+    <td>GPIO 10, 11, 12, 13</td>
+    <td>SPI Bus (CS/MOSI/SCK/MISO)</td>
+    <td>Optional flash card storage interface for macro sequences.</td>
+  </tr>
+</table>
+
+<h1>10. DETAILED SYSTEM DESIGN</h1>
+<p>Specification of system software attributes in conformance with formal IEEE 1016 guidelines:</p>
+<ol>
+  <li><strong>Classification:</strong>
+    <ul>
+      <li><em>Subsystems:</em> <code>ClientTouchSubsystem</code>, <code>GatewayCoreSubsystem</code>, <code>UsbDriverSubsystem</code>.</li>
+      <li><em>Modules & Classes:</em> <code>TouchEngine</code> (JavaScript), <code>AsyncWsHandler</code> (C++), <code>PacketParser</code> (C++), <code>UsbHidManager</code> (C++), <code>KillSwitchISR</code> (Hardware ISR).</li>
+    </ul>
+  </li>
+  <li><strong>Definition:</strong> <code>UsbHidManager</code> acts as the embedded hardware driver wrapper responsible for initializing the on-chip USB OTG controller, configuring composite descriptors, and writing serialized HID report buffers directly into endpoint registers.</li>
+  <li><strong>Responsibilities:</strong> Samples mobile touch digitizers at 60Hz; bundles movement deltas into compact JSON frames; decodes incoming WebSocket packets on Core 0; transfers reports across FreeRTOS atomic queues; services host USB polling requests at 125Hz; and executes instant RF radio shutdown upon kill-switch depression.</li>
+  <li><strong>Constraints:</strong> Cumulative touch-to-USB latency must not exceed 30ms; mobile client assets stored in LittleFS must remain below 1.5MB; dynamic SRAM allocation must remain under 256KB to prevent heap exhaustion; and USB endpoint reports must strictly conform to USB-IF HID v1.11 standards.</li>
+  <li><strong>Composition:</strong> Contains a 32-slot circular ring buffer, active client tracking structures, pre-defined report frames (<code>MouseReport</code>, <code>KeyboardReport</code>), and device descriptor tables.</li>
+  <li><strong>Resources:</strong> Dual 240MHz Xtensa LX7 CPU cores, 512KB SRAM, 16MB SPI Flash, on-die USB PHY hardware, and digital GPIO peripherals. Inter-core communication between WebSocket packet ingestion (Core 0) and USB endpoint writes (Core 1) is synchronized through FreeRTOS thread-safe atomic queues (<code>xQueueSendFromISR</code>, <code>xQueueReceive</code>).</li>
+  <li><strong>Processing:</strong> Pointer deltas undergo non-linear velocity scaling: <em>V = &alpha; &middot; (&Delta;D)<sup>1.2</sup></em>, filtering hand jitter while enabling rapid cross-screen navigation. On system boot, the firmware mounts flash storage, registers USB endpoints, initiates the SoftAP network, and enters the FreeRTOS event loop.</li>
+  <li><strong>Interface / Exports:</strong> The system exposes four primary WebSocket packet structures and public firmware APIs:
+    <pre>
+// A. Mouse Vector:   {"t":"m", "dx":14, "dy":-8}        | dx, dy: signed 16-bit deltas
+// B. Mouse Click:    {"t":"b", "btn":1, "state":1}      | btn: 1=Left, 2=Right; state: 1=Down, 0=Up
+// C. Key Injection:  {"t":"k", "key":"a", "mod":0}      | key: ASCII char; mod: 1=Ctrl, 2=Shift, 8=Win
+// D. Macro Command:  {"t":"cmd", "id":"WIN_R_CMD"}      | Triggers pre-programmed keystroke sequence
+    </pre>
+  </li>
+</ol>
+
+<div class="page-break"></div>
+
+<h1>11. FUNCTIONAL FLOW & STATE ANALYSIS</h1>
+<p>
+The system operates across six discrete, sequential functional processes: hardware initialization, wireless service advertising, client authentication/handshake, real-time input streaming, USB HID injection, and emergency RF isolation.
+</p>
+
+<h2>11.1 Process Flow Table</h2>
+<table class="data-table">
+  <tr>
+    <th>ID</th>
+    <th>Process Name</th>
+    <th>Trigger Condition</th>
+    <th>Operational Description & Output State</th>
+  </tr>
+  <tr>
+    <td><strong>P-01</strong></td>
+    <td>USB Enumeration</td>
+    <td>Plugged into host USB port</td>
+    <td>Target PC negotiates descriptors; registers Composite HID; Amber LED stays ON.</td>
+  </tr>
+  <tr>
+    <td><strong>P-02</strong></td>
+    <td>SoftAP Initialization</td>
+    <td>Microcontroller boot complete</td>
+    <td>Wi-Fi broadcasts <code>ESP32-Gateway</code>; Web server listens on port 80; Blue LED blinks.</td>
+  </tr>
+  <tr>
+    <td><strong>P-03</strong></td>
+    <td>Client WS Handshake</td>
+    <td>Phone joins Wi-Fi & loads UI</td>
+    <td>HTTP GET loads LittleFS touch UI; WebSocket tunnel opened; Blue LED turns solid.</td>
+  </tr>
+  <tr>
+    <td><strong>P-04</strong></td>
+    <td>Touch Vector Stream</td>
+    <td>Finger drags on mobile canvas</td>
+    <td>HTML5 engine sends JSON packets at 60Hz (&lt;16ms interval) over WebSockets.</td>
+  </tr>
+  <tr>
+    <td><strong>P-05</strong></td>
+    <td>HID Event Injection</td>
+    <td>WebSocket packet received</td>
+    <td>Core 1 decodes deltas and writes reports to USB OTG FIFO; cursor moves on PC.</td>
+  </tr>
+  <tr>
+    <td><strong>P-06</strong></td>
+    <td>Kill-Switch Cutoff</td>
+    <td>Push-button pressed</td>
+    <td>Hardware GPIO ISR calls <code>esp_wifi_stop()</code>; RF radio terminates; USB link persists.</td>
+  </tr>
+</table>
+
+<h2>11.2 Status Flow Table</h2>
+<table class="data-table">
+  <tr>
+    <th>ID</th>
+    <th>System Status</th>
+    <th>Hardware Indicators</th>
+    <th>Description & Operational Capabilities</th>
+  </tr>
+  <tr>
+    <td><strong>S-01</strong></td>
+    <td>Boot / Enumerating</td>
+    <td>Wi-Fi: OFF | HID: Fast Blink</td>
+    <td>Initializing LittleFS and negotiating USB descriptors with host.</td>
+  </tr>
+  <tr>
+    <td><strong>S-02</strong></td>
+    <td>Broadcasting / Ready</td>
+    <td>Wi-Fi: Slow Blink (1Hz) | HID: ON</td>
+    <td>SoftAP active; awaiting mobile association; USB link established.</td>
+  </tr>
+  <tr>
+    <td><strong>S-03</strong></td>
+    <td>Active Streaming</td>
+    <td>Wi-Fi: Solid ON | HID: Strobe</td>
+    <td>Mobile client connected; full-duplex sub-30ms touch/macro streaming live.</td>
+  </tr>
+  <tr>
+    <td><strong>S-04</strong></td>
+    <td>RF Severed (Kill Mode)</td>
+    <td>Wi-Fi: OFF | HID: Solid ON</td>
+    <td>Wi-Fi radio cut at hardware level; USB HID bus remains active.</td>
+  </tr>
+</table>
+
+<div class="page-break"></div>
+
+<h1>12. CONCLUSION, GLOSSARY & BIBLIOGRAPHY</h1>
+<p>
+<strong>Conclusion:</strong> The engineering design detailed within this document demonstrates a practical, robust, and cost-effective approach to emulating physical user inputs across air-gapped systems. By relocating remote control execution from vulnerable host-side software agents down to physical USB hardware HID signaling, the solution circumvents host administrative locks, enterprise firewall boundaries, and driver compatibility barriers. With an economical procurement budget capped at R 645.00 ZAR and a structured agile methodology, the prototype fully satisfies every core competency and practical outcome specified for the PJD 301B curriculum.
+</p>
+
+<h2>Glossary</h2>
+<table class="data-table">
+  <tr>
+    <th>Term</th>
+    <th>Definition</th>
+    <th>Term</th>
+    <th>Definition</th>
+  </tr>
+  <tr>
+    <td><strong>Air-Gap Isolation</strong></td>
+    <td>Physical and logical separation of a target computer system from external networks to prevent data exfiltration.</td>
+    <td><strong>Composite HID Peripheral</strong></td>
+    <td>A single USB device enumerating multiple distinct input collections (keyboard and relative mouse) over one physical bus.</td>
+  </tr>
+  <tr>
+    <td><strong>LittleFS Storage</strong></td>
+    <td>A high-reliability, fail-safe embedded filesystem optimized for microcontroller SPI flash partitions.</td>
+    <td><strong>Native USB OTG PHY</strong></td>
+    <td>Internal on-chip differential transceiver driving Full-Speed USB data signals directly on GPIO pins 19 and 20.</td>
+  </tr>
+  <tr>
+    <td><strong>SoftAP Wireless Mode</strong></td>
+    <td>Microcontroller-hosted 802.11 access point serving local clients without external router infrastructure.</td>
+    <td><strong>TinyUSB Driver Core</strong></td>
+    <td>A lightweight, low-overhead open-source USB device stack integrated seamlessly with FreeRTOS.</td>
+  </tr>
+  <tr>
+    <td><strong>WebSocket Protocol</strong></td>
+    <td>A bidirectional, full-duplex TCP transport mechanism (RFC 6455) minimizing transmission overhead.</td>
+    <td><strong>Xtensa LX7 Architecture</strong></td>
+    <td>High-performance 32-bit dual-core processor architecture powering the Espressif ESP32-S3 SoC.</td>
+  </tr>
+</table>
+
+<h2>Bibliography</h2>
+<ol>
+  <li>USB-IF Standards Board, "HID Endpoint Descriptors and Class Profiles," Specification Rel. 1.11, Jun. 2021.</li>
+  <li>Espressif Systems, "ESP32-S3 Microcontroller Architecture Manual," Doc. ESP32S3-TRM, Rev. 1.2, 2023.</li>
+  <li>W3C Working Group, "WebSocket API Specification," Candidate Recommendation Draft, 2020.</li>
+  <li>IEEE Standards Association, "IEEE 802.11 Wireless LAN Medium Access Control Guidelines," Standard 802.11-2020, 2020.</li>
+  <li>IETF Network Working Group, "The WebSocket Protocol Specifications," Standards Track RFC 6455, Dec. 2011.</li>
+</ol>
+
+<div class="page-break"></div>
+
+<!-- ================================================================= -->
+<!-- PART III: SOFTWARE & HARDWARE USER MANUAL                         -->
+<!-- ================================================================= -->
+<div class="cover-container">
+  <div>
+    <div class="tut-logo-container">
+      
+<div style="display: inline-flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 5px;">
+  <img src="data:image/png;base64,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" style="height: 80px; width: auto; object-fit: contain;" alt="TUT Emblem">
+  <div style="text-align: left;">
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 20pt; font-weight: 800; color: #003366; line-height: 1.15;">Tshwane University<br>of Technology</div>
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 11pt; font-style: italic; font-weight: 600; color: #C62828; margin-top: 4px;">We empower people</div>
+  </div>
+</div>
+
+    </div>
+
+    <div class="faculty-title">
+      FACULTY OF<br>
+      INFORMATION AND COMMUNICATION TECHNOLOGY
+    </div>
+
+    <div class="department-title">
+      NATIONAL DIPLOMA: COMPUTER SYSTEMS ENGINEERING
+    </div>
+
+    <div class="subject-title">
+      INTELLIGENT INDUSTRIAL SYSTEMS: IDC30BI / PJD301B
+    </div>
+
+    <div class="document-type">
+      USER MANUAL
+    </div>
+
+    <table class="metadata-box">
+      <tr>
+        <td class="metadata-label">PROJECT TITLE:</td>
+        <td class="metadata-value"><strong>Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</strong></td>
+      </tr>
+      <tr>
+        <td class="metadata-label">LECTURER NAME:</td>
+        <td class="metadata-value">Muwanguzi Mark Ntume and Chunling Du</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">STUDENTS NAME:</td>
+        <td class="metadata-value">Oratile Innocent Tshosetso</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">STUDENTS NUMBER:</td>
+        <td class="metadata-value">222883253</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">EMAIL ADDRESS:</td>
+        <td class="metadata-value">oratileinnocent.45@gmail.com</td>
+      </tr>
+      <tr>
+        <td class="metadata-label">CONTACT NUMBERS:</td>
+        <td class="metadata-value">076 950 6870</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="cover-footer">
+    Department of Computer Systems Engineering &bull; Tshwane University of Technology (TUT)
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- USER MANUAL BODY -->
+<h1>1. SCOPE & 2. REFERENCED DOCUMENTS</h1>
+
+<h2>1.1 Identification & Overview</h2>
+<p>
+This section presents the official operational manual for the <strong>Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</strong> (Release 1.0.0). The system provides an autonomous, agentless remote control bridge between a mobile smartphone and an air-gapped target PC without requiring host administrative rights, driver installations, or background software.
+</p>
+<div class="callout-box warning">
+  <div class="callout-title">Important Security Notice</div>
+  Because all remote inputs emulate native USB hardware signaling, every keystroke and mouse event executes with the physical authorization of the active user session on the target PC. Always ensure authorized physical presence before connecting.
+</div>
+
+<h2>2. Referenced Documents</h2>
+<p>
+Standards adopted: USB-IF HID Specification v1.11, Espressif ESP32-S3 TRM v1.2, IETF RFC 6455 WebSockets, and IEEE Std 1063-2001 User Documentation.
+</p>
+
+<h1>3. SOFTWARE SUMMARY</h1>
+<p>
+The system translates mobile capacitive multi-touch inputs, virtual keyboard entries, and administrative macros into standard USB HID reports.
+</p>
+<ul>
+  <li><strong>Sub-30ms Tactile Pointer Tracking:</strong> Employs non-linear velocity scaling (<em>V = &alpha; &middot; (&Delta;D)<sup>1.2</sup></em>) damping hand tremors while enabling rapid flick travel.</li>
+  <li><strong>Multi-Touch Gestures:</strong> Single-finger glide, tap left click, double-tap double click, 2-finger right click, and 2-finger vertical scroll.</li>
+  <li><strong>One-Tap Shortcut Dispatch:</strong> Executes multi-key macros (Task Manager, Alt+Tab, Windows+L Lock, Copy, Paste).</li>
+  <li><strong>Real-Time Screen Feedback:</strong> Renders binary JPEG video frames from the host streamer with an authentic Windows Aero/11 cursor overlay and click ripples.</li>
+</ul>
+
+<h2>Software Inventory & Operating Environment</h2>
+<table class="data-table">
+  <tr>
+    <th>Asset</th>
+    <th>Filename</th>
+    <th>Environment</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>Flutter Client App</td>
+    <td><code>hardware_gateway_app.apk</code></td>
+    <td>Mobile Device OS</td>
+    <td>Mobile GUI controller for touch, keyboard, macros, and stream.</td>
+  </tr>
+  <tr>
+    <td>Client Entrypoint</td>
+    <td><code>lib/main.dart</code></td>
+    <td>Flutter Project Tree</td>
+    <td>State machine, gesture engine, WebSockets, and UDP discovery.</td>
+  </tr>
+  <tr>
+    <td>Microcontroller Firmware</td>
+    <td><code>firmware.bin</code></td>
+    <td>ESP32-S3 SPI Flash</td>
+    <td>FreeRTOS dual-core USB OTG stack and WebSocket server.</td>
+  </tr>
+  <tr>
+    <td>Host Streamer Service</td>
+    <td><code>HardwareGatewayStream.py</code></td>
+    <td>Target Host Background</td>
+    <td>Asyncio WebSocket screen capture daemon (Port 8765).</td>
+  </tr>
+</table>
+
+<div class="page-break"></div>
+
+<h2>Software Organization & Operation Overview</h2>
+<pre>
++-------------------------------------------------------------------------------+
+|                      LAYER 1: MOBILE CLIENT (FLUTTER APP)                     |
+|  - Real-Time PC Screen Feed (Port 8765)      - Capacitive Touchpad (60Hz)     |
+|  - Real Windows Aero Cursor CustomPainter    - Virtual Keyboard & Macros      |
++-------------------------------------------------------------------------------+
+           | (Binary JPEG Frames)                         | (JSON Packets over WS)
+           v                                              v
++-----------------------------+                +--------------------------------+
+| HOST SCREEN STREAMER DAEMON |                | LAYER 2: ESP32-S3 GATEWAY      |
+| - Python Asyncio Grabber    |                | - Core 0: SoftAP & LwIP Stack  |
+| - UDP Discovery (Port 8765) |                | - Core 1: TinyUSB HID Engine   |
++-----------------------------+                +--------------------------------+
+                                                              | (USB D+ / D-)
+                                                              v
++-------------------------------------------------------------------------------+
+|                            LAYER 3: TARGET HOST PC                            |
+|             Native OS USB Composite HID Driver (Zero Software Required)       |
++-------------------------------------------------------------------------------+
+</pre>
+
+<p>
+<strong>Latency Profile:</strong> Cumulative latency is kept strictly below 30ms:
+<em>T<sub>total</sub> = T<sub>touch_sample</sub> (16.6ms) + T<sub>ws_transmit</sub> (5ms) + T<sub>esp_decode</sub> (0.5ms) + T<sub>usb_poll</sub> (8ms) &approx; 28.1 ms</em>.
+</p>
+
+<h2>Contingencies and Operating States</h2>
+<table class="data-table">
+  <tr>
+    <th>State</th>
+    <th>Mode</th>
+    <th>LED Status</th>
+    <th>System Capabilities</th>
+  </tr>
+  <tr>
+    <td><strong>S-01</strong></td>
+    <td>Boot / Enumerating</td>
+    <td>Wi-Fi: OFF | HID: Fast Blink</td>
+    <td>Mounting LittleFS, initializing USB OTG, negotiating descriptors.</td>
+  </tr>
+  <tr>
+    <td><strong>S-02</strong></td>
+    <td>Broadcasting / Ready</td>
+    <td>Wi-Fi: Slow Blink | HID: Solid ON</td>
+    <td>SoftAP broadcasting (<code>ESP32-Gateway</code>); server listening; USB ready.</td>
+  </tr>
+  <tr>
+    <td><strong>S-03</strong></td>
+    <td>Active Streaming</td>
+    <td>Wi-Fi: Solid ON | HID: Strobing</td>
+    <td>Client connected; full-duplex sub-30ms touch and macro streaming active.</td>
+  </tr>
+  <tr>
+    <td><strong>S-04</strong></td>
+    <td>RF Severed (Kill Mode)</td>
+    <td>Wi-Fi: OFF | HID: Solid ON</td>
+    <td>Kill-switch pressed; Wi-Fi powered down at physical layer; USB link persists.</td>
+  </tr>
+</table>
+
+<h1>4. ACCESS TO THE SOFTWARE</h1>
+
+<h2>4.1 Installation & Startup</h2>
+<ol>
+  <li><strong>Hardware Insertion:</strong> Plug the ESP32-S3 dongle into an available USB Type-A or Type-C port on the target machine. Within 2–3 seconds, the target OS registers the device as a standard keyboard/mouse (Amber LED turns solid).</li>
+  <li><strong>Network Association:</strong> Open phone Wi-Fi settings and connect to <code>ESP32-Gateway</code> (Passphrase: <code>Password123</code>).</li>
+  <li><strong>Launch App:</strong> Open the <strong>Hardware Gateway</strong> app on your smartphone. The app automatically tests the WebSocket connection to <code>ws://192.168.4.1/ws</code> and UDP discovery on port 8765. Verify the green status pills (<code>ESP32: Connected</code>).</li>
+</ol>
+
+<div class="page-break"></div>
+
+<h2>4.2 Description of Inputs & Outputs</h2>
+<p>Inputs are formatted as compact UTF-8 JSON text frames across WebSockets:</p>
+<pre>
+{"t":"m", "dx":14, "dy":-8}                 // Relative pointer delta
+{"t":"b", "btn":1, "state":1}               // Left button down
+{"t":"k", "key":"A", "mod":2}               // Injected key 'A' (Shift modifier)
+{"t":"cmd", "id":"TASK_MGR"}                // Macro shortcut
+</pre>
+<p>
+<strong>Outputs:</strong> 4-byte standard USB HID mouse reports, 8-byte standard USB HID keyboard reports, hardware status LEDs, and real-time screen display with Windows Aero cursor overlay.
+</p>
+
+<h2>4.3 Recovery Procedures</h2>
+<table class="data-table">
+  <tr>
+    <th>Symptom</th>
+    <th>Root Cause</th>
+    <th>Corrective Action</th>
+  </tr>
+  <tr>
+    <td>Pill displays <code>ESP32: Offline</code></td>
+    <td>Wi-Fi association dropped.</td>
+    <td>Reconnect to <code>ESP32-Gateway</code> in phone settings. Confirm dongle power.</td>
+  </tr>
+  <tr>
+    <td>Host cursor does not move</td>
+    <td>Port lacks data lines.</td>
+    <td>Ensure dongle is inserted into a functional data-capable USB OTG port.</td>
+  </tr>
+  <tr>
+    <td>Pill displays <code>Screen: Offline</code></td>
+    <td>Host streamer daemon stopped.</td>
+    <td>Launch <code>HardwareGatewayStream.py</code> on PC. Allow port 8765 in firewall.</td>
+  </tr>
+  <tr>
+    <td>Cursor sensitivity miscalibrated</td>
+    <td>Software slider setting.</td>
+    <td>Tap Settings (Gear) icon; adjust sensitivity between 0.4&times; and 2.5&times;.</td>
+  </tr>
+  <tr>
+    <td>Wi-Fi drops and cannot reconnect</td>
+    <td>Hardware kill-switch pressed.</td>
+    <td>Power cycle hardware gateway (unplug and re-insert USB) to re-enable Wi-Fi.</td>
+  </tr>
+</table>
+
+<h2>4.4 Stopping & Emergency Severance</h2>
+<ul>
+  <li><strong>Normal Disconnection:</strong> Close mobile application or disconnect Wi-Fi. The gateway enters low-power standby mode.</li>
+  <li><strong>Emergency RF Termination:</strong> Press the tactile push-button on the enclosure. The active-low hardware interrupt executes <code>esp_wifi_stop()</code> in &lt;2 ms, terminating all RF broadcasting instantly while maintaining the physical USB link.</li>
+  <li><strong>Full Powerdown:</strong> Unplug the ESP32-S3 dongle from the host PC USB port.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h1>5. PROCESSING REFERENCE GUIDE</h1>
+
+<h2>5.1 User Interactions & Control Layout</h2>
+<p>
+The application employs a 50/50 dual-viewport Cyber-Slate layout:
+</p>
+<ul>
+  <li><strong>Top Viewport:</strong> Real-time remote PC desktop display feed (or full-screen when toggled).</li>
+  <li><strong>Bottom Viewport:</strong> Precision touch tracking canvas, dedicated left/right click buttons, and docked utility controls.</li>
+  <li><strong>Move Cursor:</strong> 1-finger smooth glide on trackpad.</li>
+  <li><strong>Left Click:</strong> 1-finger tap or LEFT CLICK button.</li>
+  <li><strong>Double Click:</strong> Rapid double-tap on trackpad.</li>
+  <li><strong>Right Click:</strong> 2-finger tap or RIGHT CLICK button.</li>
+  <li><strong>Scroll:</strong> 2-finger vertical drag.</li>
+  <li><strong>Text Input:</strong> Dock -> Keyboard icon -> Type text -> Send Text.</li>
+  <li><strong>Macros:</strong> Dock -> Bolt icon -> Select <code>TASK_MGR</code>, <code>WIN_L</code>, <code>ALT_TAB</code>, <code>NEXT_SLIDE</code>, <code>START_SLIDESHOW</code>, <code>CTRL_C</code>, <code>CTRL_V</code>.</li>
+</ul>
+
+<h2>5.2 Quick-Reference Operator Guide</h2>
+<table class="data-table">
+  <tr>
+    <th>Desired Action</th>
+    <th>Input Method / Gesture</th>
+    <th>Target PC Output</th>
+  </tr>
+  <tr>
+    <td>Move Pointer</td>
+    <td>1-finger glide on touchpad</td>
+    <td>Smooth mouse cursor movement (<em>V = &alpha; &middot; (&Delta;D)<sup>1.2</sup></em>)</td>
+  </tr>
+  <tr>
+    <td>Left Click</td>
+    <td>1-finger tap or LEFT CLICK button</td>
+    <td>Mouse Button 1 down & release (Click ripple displayed)</td>
+  </tr>
+  <tr>
+    <td>Double Click</td>
+    <td>Quick double-tap on touchpad</td>
+    <td>Two consecutive Button 1 clicks (Opens files/folders)</td>
+  </tr>
+  <tr>
+    <td>Right Click</td>
+    <td>2-finger tap or RIGHT CLICK button</td>
+    <td>Mouse Button 2 click (Context menu)</td>
+  </tr>
+  <tr>
+    <td>Scroll Document</td>
+    <td>2-finger drag up or down</td>
+    <td>Smooth vertical mouse wheel delta injection</td>
+  </tr>
+  <tr>
+    <td>Type Text String</td>
+    <td>Dock -> Keyboard -> Enter text</td>
+    <td>Direct sequential USB keystroke injection</td>
+  </tr>
+  <tr>
+    <td>Open Task Manager</td>
+    <td>Dock -> Bolt icon -> Task Manager</td>
+    <td>Executes <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Esc</kbd></td>
+  </tr>
+  <tr>
+    <td>Toggle Fullscreen</td>
+    <td>Dock -> Fullscreen (Expand) icon</td>
+    <td>Expands PC video feed to fill 100% of mobile display</td>
+  </tr>
+  <tr>
+    <td>Emergency Cutoff</td>
+    <td>Depress hardware push-button</td>
+    <td>Physical Wi-Fi radio powerdown (&lt;2 ms)</td>
+  </tr>
+</table>
+
+<div class="page-break"></div>
+
+<h1>6. QUERY PROCEDURES</h1>
+<p>
+The system exchanges asynchronous query/response datagrams over UDP and WebSockets:
+</p>
+<ul>
+  <li><strong>UDP Auto-Discovery:</strong> The mobile client broadcasts <code>HW_GATEWAY_DISCOVERY_PROBE</code> on UDP port 8765 every 5 seconds. The host daemon responds with its server hostname and IP, enabling zero-configuration auto-connection.</li>
+  <li><strong>Preset Switching:</strong> The Settings sheet allows one-tap switching between network environments:
+    <ul>
+      <li><em>Campus Wi-Fi:</em> Connects to host at <code>10.2.39.171:8765</code>.</li>
+      <li><em>ESP32 SoftAP:</em> Connects to host at <code>192.168.4.3:8765</code>.</li>
+      <li><em>USB Tether:</em> Connects to host via loopback at <code>127.0.0.1:8765</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h1>7. NOTES (GLOSSARY & ACRONYMS)</h1>
+<p>
+<strong>Air-Gap Isolation:</strong> Complete physical and logical detachment from external networks. &bull;
+<strong>Composite HID:</strong> Single physical USB interface exposing multiple input devices (mouse + keyboard). &bull;
+<strong>LittleFS:</strong> Resilient embedded filesystem on SPI flash. &bull;
+<strong>SoftAP:</strong> Software Access Point hosting local Wi-Fi without a router. &bull;
+<strong>TinyUSB:</strong> Lightweight open-source embedded USB device stack.
+</p>
+<p>
+<strong>Acronyms:</strong> ADC (Application Default Credentials), API (Application Programming Interface), DHCP (Dynamic Host Configuration Protocol), FIFO (First-In, First-Out Buffer), GPIO (General Purpose Input/Output), HID (Human Interface Device), ISR (Interrupt Service Routine), JSON (JavaScript Object Notation), LED (Light Emitting Diode), OTG (On-The-Go), PCB (Printed Circuit Board), RF (Radio Frequency), SoC (System-on-Chip), TUT (Tshwane University of Technology), UDP (User Datagram Protocol), USB (Universal Serial Bus), WDT (Watchdog Timer).
+</p>
+
+<h1>8. REFERENCE</h1>
+<ol>
+  <li>USB-IF Standards Board, "HID Endpoint Descriptors and Class Profiles," Specification Rel. 1.11, Jun. 2021.</li>
+  <li>Espressif Systems, "ESP32-S3 Microcontroller Architecture Manual," Doc. ESP32S3-TRM, Rev. 1.2, 2023.</li>
+  <li>W3C Working Group, "WebSocket API Specification," Candidate Recommendation Draft, 2020.</li>
+  <li>IEEE Standards Association, "IEEE 802.11 Wireless LAN Guidelines," Standard 802.11-2020, 2020.</li>
+  <li>IETF Network Working Group, "The WebSocket Protocol," RFC 6455, Dec. 2011.</li>
+</ol>
+
+<div class="page-break"></div>
+
+<h1>A. APPENDIXES</h1>
+
+<h2>Appendix A.1: Hardware Interface & Pin Allocation Mapping</h2>
+<table class="data-table">
+  <tr>
+    <th>Signal / Net</th>
+    <th>ESP32-S3 Pin</th>
+    <th>Hardware Mode</th>
+    <th>Functional Description & Interconnect</th>
+  </tr>
+  <tr>
+    <td><strong>USB D-</strong></td>
+    <td>GPIO 19</td>
+    <td>Native USB OTG</td>
+    <td>USB 2.0 Full-Speed Differential Data Minus line.</td>
+  </tr>
+  <tr>
+    <td><strong>USB D+</strong></td>
+    <td>GPIO 20</td>
+    <td>Native USB OTG</td>
+    <td>USB 2.0 Full-Speed Differential Data Plus line.</td>
+  </tr>
+  <tr>
+    <td><strong>RF Kill-Switch</strong></td>
+    <td>GPIO 14</td>
+    <td>Digital In (Pull-up)</td>
+    <td>Active-low push-button; falling edge ISR terminates SoftAP in &lt;2 ms.</td>
+  </tr>
+  <tr>
+    <td><strong>Status LED 1 (Wi-Fi)</strong></td>
+    <td>GPIO 5</td>
+    <td>Digital Output</td>
+    <td>Blue LED with 330 &Omega; resistor; blinks when idle, solid when connected.</td>
+  </tr>
+  <tr>
+    <td><strong>Status LED 2 (HID)</strong></td>
+    <td>GPIO 4</td>
+    <td>Digital Output</td>
+    <td>Amber LED with 330 &Omega; resistor; strobes upon active USB HID packet injection.</td>
+  </tr>
+  <tr>
+    <td><strong>VBUS Power</strong></td>
+    <td>5V Pin</td>
+    <td>Power Rail</td>
+    <td>Directly powered from host USB 5V VBUS bus (peak draw &lt;280 mA).</td>
+  </tr>
+  <tr>
+    <td><strong>Ground</strong></td>
+    <td>GND Pin</td>
+    <td>Ground Reference</td>
+    <td>Common system ground plane for USB, LEDs, and tactile button.</td>
+  </tr>
+</table>
+
+<h2>Appendix A.2: 3D Enclosure Assembly & Fabrication Specifications</h2>
+<ul>
+  <li><strong>Housing Dimensions:</strong> 76.0 mm (Length) &times; 38.0 mm (Width) &times; 16.0 mm (Height).</li>
+  <li><strong>Recommended Slicer Settings:</strong> PETG filament, 0.16 mm layer height, 20% Gyroid infill, 3 perimeter walls.</li>
+  <li><strong>Assembly Procedure:</strong>
+    <ol>
+      <li>Insert the <code>button_plunger.stl</code> into the guide channel of <code>enclosure_lid.stl</code> (captive flange prevents fallout).</li>
+      <li>Slide 3mm Blue and Amber LEDs into the internal light isolation baffle sleeves.</li>
+      <li>Mount the ESP32-S3 PCB onto the 4 base standoffs of <code>enclosure_base.stl</code> aligning the USB-C port cutout.</li>
+      <li>Solder inline 330 &Omega; current-limiting resistors and connect push-button leads to GPIO 14 and GND.</li>
+      <li>Snap the lid onto the base via the precision tongue-and-groove lip and secure with optional M3 fasteners.</li>
+    </ol>
+  </li>
+</ul>
+
+</body>
+</html>

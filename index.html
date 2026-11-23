@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardware-Level USB Remote Access Gateway — Live Exhibition Showcase & Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070B14;
+      --card: #0F172A;
+      --card-border: #1E293B;
+      --accent: #00F2FE;
+      --mint: #55D6BE;
+      --tut-blue: #002B49;
+      --tut-gold: #C59B27;
+      --tut-red: #D71920;
+      --text: #F1F5F9;
+      --muted: #94A3B8;
+      --danger: #EF4444;
+      --success: #10B981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 242, 254, 0.07) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(85, 214, 190, 0.06) 0%, transparent 45%);
+    }
+
+    code, pre, .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* TOP ANNOUNCEMENT BANNER */
+    .top-bar {
+      background: linear-gradient(90deg, #001A33 0%, var(--tut-blue) 50%, #001A33 100%);
+      border-bottom: 2px solid var(--tut-gold);
+      padding: 10px 20px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      color: #FFF;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-exhibition {
+      background: var(--tut-gold);
+      color: #000;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 12px;
+      color: #CBD5E1;
+    }
+
+    .github-pill {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #FFF;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .github-pill:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      margin-bottom: 50px;
+      position: relative;
+    }
+
+    .institution-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--card-border);
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 13px;
+      color: var(--mint);
+      margin-bottom: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-title {
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #FFFFFF 30%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 820px;
+      margin: 0 auto 30px;
+      font-weight: 400;
+    }
+
+    .hero-tags {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .hero-tag {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-tag span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .author-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 25px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      margin-bottom: 35px;
+    }
+
+    .author-strip strong {
+      color: #FFF;
+    }
+
+    /* SECTION TITLES */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 50px 0 25px;
+    }
+
+    .section-num {
+      background: linear-gradient(135deg, var(--accent), var(--mint));
+      color: #000;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 15px;
+      margin-top: -15px;
+      margin-bottom: 25px;
+    }
+
+    /* INTERACTIVE SIMULATOR GRID */
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 25px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 960px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-title {
+        font-size: 32px;
+      }
+    }
+
+    /* VIRTUAL FLUTTER APP PHONE */
+    .app-frame {
+      background: var(--card);
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .app-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #FFF;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* INTERACTIVE TRACKPAD */
+    .trackpad-surface {
+      background: #090D16;
+      border: 2px dashed #1E2D4A;
+      border-radius: 16px;
+      height: 280px;
+      position: relative;
+      cursor: crosshair;
+      user-select: none;
+      touch-action: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+
+    .trackpad-surface.active {
+      border-color: var(--accent);
+      background: #0A111F;
+    }
+
+    .trackpad-hint {
+      color: #475569;
+      font-size: 13px;
+      pointer-events: none;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .trackpad-cursor {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(0, 242, 254, 0.25);
+      border: 2px solid var(--accent);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      display: none;
+      box-shadow: 0 0 15px var(--accent);
+      transition: opacity 0.3s;
+    }
+
+    .trackpad-trail {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--mint);
+      pointer-events: none;
+      opacity: 0.8;
+      transform: translate(-50%, -50%);
+    }
+
+    /* MOUSE BUTTONS */
+    .mouse-buttons-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .mouse-btn {
+      background: #131E33;
+      border: 1px solid #1E2E4E;
+      color: #FFF;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .mouse-btn:hover {
+      background: #1A2844;
+      border-color: var(--accent);
+    }
+
+    .mouse-btn:active, .mouse-btn.active {
+      background: var(--accent);
+      color: #000;
+      transform: translateY(2px);
+      box-shadow: 0 0 15px var(--accent);
+    }
+
+    /* SCROLL CONTROLS */
+    .scroll-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 15px;
+      background: #0B111F;
+      border: 1px solid var(--card-border);
+      padding: 10px 16px;
+      border-radius: 12px;
+    }
+
+    .scroll-label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+      min-width: 90px;
+    }
+
+    .scroll-btn {
+      flex: 1;
+      background: #1A263D;
+      border: 1px solid #2A3C60;
+      color: #FFF;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .scroll-btn:hover {
+      background: var(--mint);
+      color: #000;
+    }
+
+    .scroll-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* TELEMETRY BAR */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+      background: #090E17;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .telemetry-item {
+      text-align: center;
+    }
+
+    .telemetry-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .telemetry-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    /* VIRTUAL TARGET HOST MONITOR */
+    .monitor-frame {
+      background: #050811;
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .monitor-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: #0F172A;
+      border: 1px solid var(--card-border);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    .virtual-screen {
+      background: #000;
+      border: 2px solid #1E293B;
+      border-radius: 12px;
+      height: 290px;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* SCENARIO 1: UEFI BIOS */
+    .screen-bios {
+      width: 100%;
+      height: 100%;
+      background: #0000AA;
+      color: #FFF;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 12px;
+      font-size: 11px;
+      box-sizing: border-box;
+      display: none;
+    }
+
+    .screen-bios.active {
+      display: block;
+    }
+
+    .bios-header {
+      background: #5555FF;
+      color: #FFF;
+      padding: 3px 6px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .bios-menu-row {
+      display: flex;
+      gap: 15px;
+      border-bottom: 1px solid #FFF;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .bios-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 2px 4px;
+    }
+
+    .bios-item.selected {
+      background: #FFF;
+      color: #0000AA;
+      font-weight: 700;
+    }
+
+    /* SCENARIO 2: WINDOWS LOCK */
+    .screen-windows {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+      color: #FFF;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .screen-windows.active {
+      display: flex;
+    }
+
+    .win-clock {
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .win-date {
+      font-size: 13px;
+      color: #94A3B8;
+      margin-bottom: 25px;
+    }
+
+    .win-user {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      background: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 8px;
+      border: 2px solid var(--accent);
+    }
+
+    /* SCENARIO 3: LINUX CONSOLE */
+    .screen-linux {
+      width: 100%;
+      height: 100%;
+      background: #0A0A0A;
+      color: #10B981;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 12px;
+      font-size: 11px;
+      display: none;
+      overflow: hidden;
+    }
+
+    .screen-linux.active {
+      display: block;
+    }
+
+    /* TARGET HOST VIRTUAL CURSOR */
+    .host-cursor {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 50%;
+      left: 50%;
+      transform: translate(0, 0);
+      pointer-events: none;
+      z-index: 100;
+      filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.8));
+      transition: transform 0.04s linear;
+    }
+
+    .host-cursor-pulse {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(0, 242, 254, 0.4);
+      top: -7px;
+      left: -7px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* RAW USB HID PACKET LOG */
+    .hid-stream-card {
+      margin-top: 15px;
+      background: #090E17;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .hid-stream-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .hid-hex-box {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--mint);
+      background: #030712;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #1F2937;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    /* PORTFOLIO DOWNLOADS GRID */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .doc-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .doc-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .doc-card:hover {
+      transform: translateY(-4px);
+      border-color: #334155;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .doc-card:hover::before {
+      opacity: 1;
+    }
+
+    .doc-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .doc-badge.pdf { background: rgba(239, 68, 68, 0.2); color: #F87171; }
+    .doc-badge.poster { background: rgba(16, 185, 129, 0.2); color: #34D399; }
+    .doc-badge.slides { background: rgba(168, 85, 247, 0.2); color: #C084FC; }
+    .doc-badge.manual { background: rgba(245, 158, 11, 0.2); color: #FBBF24; }
+
+    .doc-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 6px;
+    }
+
+    .doc-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .doc-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      border-top: 1px solid #1E293B;
+      padding-top: 12px;
+    }
+
+    /* ARCHITECTURE GRID */
+    .arch-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 28px;
+      margin-top: 20px;
+    }
+
+    .flow-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .flow-step {
+      background: #090E17;
+      border: 1px solid #1E293B;
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .flow-step-num {
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .flow-step-title {
+      font-weight: 700;
+      color: #FFF;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .flow-step-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* 3D VIEWER EMBED */
+    .viewer-embed-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 24px;
+      margin-top: 25px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 25px;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .viewer-embed-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .viewer-details h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 12px;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 18px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .feature-list li {
+      font-size: 13.5px;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .feature-list li strong {
+      color: var(--accent);
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--mint));
+      color: #000;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+
+    .action-btn:hover {
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    .main-footer {
+      border-top: 1px solid var(--card-border);
+      margin-top: 80px;
+      padding-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-left strong {
+      color: #FFF;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="badge-exhibition">Exhibition 2026</span>
+      <span>Tshwane University of Technology · Dept. of Computer Systems Engineering</span>
+    </div>
+    <div class="top-bar-right">
+      <span>24 November 2026</span>
+      <a href="https://github.com/oratileinnocent/HardwareGatewayApp" class="github-pill" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        GitHub Source Code
+      </a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- HERO HEADER -->
+    <header class="hero">
+      <div class="institution-pill">
+        <span>🏛️</span> Faculty of Information &amp; Communication Technology · PJD301B / IDC30BI
+      </div>
+      <h1 class="hero-title">HARDWARE-LEVEL USB REMOTE ACCESS GATEWAY</h1>
+      <p class="hero-subtitle">
+        A driverless, air-gap compliant hardware remote bridge emulating USB Composite HID optical mouse &amp; 104-key keyboard via ESP32-S3 without host software or network exposure.
+      </p>
+
+      <div class="author-strip">
+        <div><strong>Student:</strong> Oratile Innocent Tshosetso (222883253)</div>
+        <div><strong>Supervisors:</strong> Muwanguzi Mark Ntume &amp; Chunling Du</div>
+        <div><strong>Date:</strong> 24 November 2026</div>
+      </div>
+
+      <div class="hero-tags">
+        <div class="hero-tag">🔒 <span>100% Air-Gap Safe</span></div>
+        <div class="hero-tag">⚡ <span>Zero Software Footprint</span></div>
+        <div class="hero-tag">💻 <span>Pre-Boot UEFI/BIOS Access</span></div>
+        <div class="hero-tag">⏱️ <span>&lt; 12ms WebSocket RTT</span></div>
+        <div class="hero-tag">🖱️ <span>Native USB 2.0 Full-Speed OTG</span></div>
+      </div>
+    </header>
+
+    <!-- 01 LIVE INTERACTIVE SIMULATOR -->
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <h2 class="section-title">Live Interactive System Simulator</h2>
+    </div>
+    <p class="section-desc">
+      Interact with the mobile Flutter client trackpad on the left to see USB HID packets injected in real-time into the target PC display on the right.
+    </p>
+
+    <div class="demo-grid">
+      
+      <!-- CLIENT DEVICE (FLUTTER APP VIEW) -->
+      <div class="app-frame">
+        <div class="app-header">
+          <div class="app-title">
+            <span>📱</span> Flutter Gateway Client
+          </div>
+          <div class="status-badge">
+            <div class="status-dot"></div>
+            <span>ESP32 Connected</span>
+          </div>
+        </div>
+
+        <!-- TRACKPAD -->
+        <div class="trackpad-surface" id="trackpad">
+          <div class="trackpad-cursor" id="trackpad-cursor"></div>
+          <div class="trackpad-hint" id="trackpad-hint">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+            <span>Touch or Drag Cursor Here to Control Target Host</span>
+            <span style="font-size: 11px; color: #64748B;">Multi-touch gesture &amp; velocity smoothing active</span>
+          </div>
+        </div>
+
+        <!-- MOUSE BUTTONS -->
+        <div class="mouse-buttons-row">
+          <button class="mouse-btn" id="btn-left-click">
+            <span>👈</span> Left Click <span class="mono" id="left-count" style="font-size: 11px; opacity: 0.7;">(0)</span>
+          </button>
+          <button class="mouse-btn" id="btn-right-click">
+            <span>👉</span> Right Click <span class="mono" id="right-count" style="font-size: 11px; opacity: 0.7;">(0)</span>
+          </button>
+        </div>
+
+        <!-- SCROLL CONTROLS -->
+        <div class="scroll-row">
+          <span class="scroll-label">🖱️ Scroll Wheel:</span>
+          <button class="scroll-btn" id="btn-scroll-up">▲ Scroll Up</button>
+          <button class="scroll-btn" id="btn-scroll-down">▼ Scroll Down</button>
+        </div>
+
+        <!-- LIVE TELEMETRY -->
+        <div class="telemetry-grid">
+          <div class="telemetry-item">
+            <div class="telemetry-label">RTT Latency</div>
+            <div class="telemetry-val" id="rtt-val">11.8 ms</div>
+          </div>
+          <div class="telemetry-item">
+            <div class="telemetry-label">Delta X / Y</div>
+            <div class="telemetry-val mono" id="delta-val">dX: 0 dY: 0</div>
+          </div>
+          <div class="telemetry-item">
+            <div class="telemetry-label">Packets Sent</div>
+            <div class="telemetry-val mono" id="packet-count">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARGET HOST PC (MONITOR SCREEN VIEW) -->
+      <div class="monitor-frame">
+        <div class="monitor-tabs">
+          <button class="tab-btn active" data-tab="bios">🖥️ UEFI / BIOS Menu</button>
+          <button class="tab-btn" data-tab="windows">🪟 Windows 11 Login</button>
+          <button class="tab-btn" data-tab="linux">🐧 Linux Terminal</button>
+        </div>
+
+        <!-- VIRTUAL SCREEN CONTAINER -->
+        <div class="virtual-screen" id="virtual-screen">
+          
+          <!-- VIRTUAL HARDWARE CURSOR -->
+          <div class="host-cursor" id="host-cursor">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF" stroke="#000000" stroke-width="1.5">
+              <path d="M3 3l7 18 3-7 7-3L3 3z"/>
+            </svg>
+            <div class="host-cursor-pulse" id="cursor-pulse"></div>
+          </div>
+
+          <!-- TAB 1: UEFI BIOS -->
+          <div class="screen-bios active" id="view-bios">
+            <div class="bios-header">
+              <span>American Megatrends UEFI BIOS Utility - Setup Mode</span>
+              <span id="bios-clock">18:15:00</span>
+            </div>
+            <div class="bios-menu-row">
+              <span style="color: #FFD700;">Main</span>
+              <span>Advanced</span>
+              <span>Security</span>
+              <span>Boot</span>
+              <span>Exit</span>
+            </div>
+            <div style="margin: 8px 0; color: #FFF;">
+              <div>Processor: AMD Ryzen 7 5800X @ 3.80GHz</div>
+              <div>Memory: 32768 MB (DDR4 3200MHz)</div>
+              <div>USB Devices: <strong>[USB Composite HID: Optical Mouse + Keyboard]</strong></div>
+            </div>
+            <div style="margin-top: 15px;">
+              <div class="bios-item selected" id="bios-item-1">&gt; System Language ................. [English]</div>
+              <div class="bios-item" id="bios-item-2">&gt; Secure Boot State ............... [Enabled]</div>
+              <div class="bios-item" id="bios-item-3">&gt; Hardware Gateway USB Bridge ..... [ACTIVE / 0-ERR]</div>
+              <div class="bios-item" id="bios-item-4">&gt; Boot Priority Order ............. [NVMe SSD]</div>
+            </div>
+            <div style="position: absolute; bottom: 8px; left: 12px; font-size: 10px; color: #A0AEC0;">
+              [Out-of-Band Hardware Control Active — TeamViewer/RDP are BLIND here]
+            </div>
+          </div>
+
+          <!-- TAB 2: WINDOWS LOCK -->
+          <div class="screen-windows" id="view-windows">
+            <div class="win-clock" id="win-clock">18:15</div>
+            <div class="win-date">Tuesday, 24 November 2026</div>
+            <div class="win-user">👤</div>
+            <div style="font-size: 15px; font-weight: 600;">System Administrator</div>
+            <div style="font-size: 12px; color: #94A3B8; margin-top: 4px;">Host: SECURE-WORKSTATION-01</div>
+            <div style="margin-top: 15px; padding: 6px 14px; background: rgba(0, 242, 254, 0.1); border: 1px solid var(--accent); border-radius: 6px; font-size: 11px; color: var(--accent);">
+              Driverless HID Injected directly into Windows Kernel
+            </div>
+          </div>
+
+          <!-- TAB 3: LINUX CONSOLE -->
+          <div class="screen-linux" id="view-linux">
+            <div style="color: #6EE7B7;">TUT Computer Systems Engineering - Air-Gapped Forensic Lab</div>
+            <div style="color: #9CA3AF; margin-bottom: 6px;">Kernel 6.1.0-28-amd64 #1 SMP PREEMPT_DYNAMIC x86_64</div>
+            <div style="margin: 4px 0;">[  +0.000104] usb 1-1: New USB device found, idVendor=303a, idProduct=80c8</div>
+            <div style="margin: 4px 0;">[  +0.000012] usb 1-1: New USB device strings: Mfr=1, Product=2, S/N=3</div>
+            <div style="margin: 4px 0; color: #FCD34D;">[  +0.000008] input: ESP32-S3 USB Composite HID Mouse as /dev/input/mouse1</div>
+            <div style="margin: 4px 0; color: #FCD34D;">[  +0.000005] input: ESP32-S3 USB Composite HID Keyboard as /dev/input/event3</div>
+            <div style="margin: 4px 0; color: #34D399;">[  +0.000010] hid-generic 0003:303A:80C8.0001: input,hidraw0: USB HID v1.11</div>
+            <div style="margin-top: 10px; color: #FFF;">
+              root@secure-node:~# <span style="animation: pulse 1s infinite;">_</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- REAL-TIME USB HID RAW PACKET LOG -->
+        <div class="hid-stream-card">
+          <div class="hid-stream-header">
+            <span>⚡ ESP32 Core 1 -> USB OTG Differential Report (D+/D-)</span>
+            <span class="mono" id="hid-status">12 Mbps Full-Speed</span>
+          </div>
+          <div class="hid-hex-box" id="hid-hex-stream">
+            [0x01, BTN:0x00, dX:+00, dY:+00, WHL:0x00] // USB HID Report Ready
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 02 3D VIRTUAL TWIN & ENCLOSURE -->
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <h2 class="section-title">3D Virtual Twin &amp; Custom Ergonomic Enclosure</h2>
+    </div>
+    <p class="section-desc">
+      Precision 3D-modeled custom mouse enclosure designed in OpenSCAD and 3D printed for the exhibition prototype.
+    </p>
+
+    <div class="viewer-embed-card">
+      <div class="viewer-details">
+        <h3>🖱️ "Cybermouse" Hardware Bridge Housing</h3>
+        <p style="color: var(--muted); font-size: 14px;">
+          Engineered to house the dual-core ESP32-S3 microcontroller, dual USB-C physical ports, and custom status LEDs inside a genuine mouse form-factor for zero physical intrusion alarms.
+        </p>
+
+        <ul class="feature-list">
+          <li><span>🔌</span> <strong>Front-Right USB-C Cutout:</strong> Aligned with the ESP32-S3 secondary OTG port for direct target PC connection.</li>
+          <li><span>🏛️</span> <strong>Official TUT University Emblem:</strong> Multi-tiered radiating crest debossed directly into the bottom floor plate (Z=0).</li>
+          <li><span>🖱️</span> <strong>Tactile Scroll Plunger:</strong> 7-rib rubber-textured wheel button with tactical microswitch actuation.</li>
+          <li><span>🖐️</span> <strong>Contoured Palm Rest:</strong> Arched ergonomic curve with debossed "GATEWAY" branding.</li>
+        </ul>
+
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
+          <a href="hardware/enclosure/view_3d.html" class="action-btn" target="_blank" rel="noopener">
+            <span>🌐</span> Launch Interactive 3D Orbit Viewer
+          </a>
+          <a href="hardware/enclosure/enclosure_full_set.stl" class="action-btn" style="background: #1E293B; color: #FFF; border: 1px solid #334155;" download>
+            <span>📥</span> Download 3D Print STL (399 KB)
+          </a>
+        </div>
+      </div>
+
+      <div style="text-align: center;">
+        <img src="prototype_hardware_photo.jpg" alt="Prototype Hardware Photo" style="max-width: 100%; border-radius: 14px; border: 1px solid var(--card-border); box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+        <div style="font-size: 12px; color: var(--muted); margin-top: 8px;">Assembled Prototype Bench Hardware</div>
+      </div>
+    </div>
+
+    <!-- 03 SYSTEM ARCHITECTURE -->
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <h2 class="section-title">System Architecture &amp; Signal Pipeline</h2>
+    </div>
+    <p class="section-desc">
+      Out-of-band communication topology ensuring strict air-gap compliance and zero host attack surface.
+    </p>
+
+    <div class="arch-card">
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-step-num">STAGE 01</div>
+          <div class="flow-step-title">📱 Mobile Client</div>
+          <div class="flow-step-desc">
+            Cross-platform Flutter application captures multi-touch gestures, button taps, and scroll deltas with sub-pixel velocity scaling.
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">STAGE 02</div>
+          <div class="flow-step-title">📶 2.4 GHz SoftAP</div>
+          <div class="flow-step-desc">
+            Low-overhead asynchronous WebSockets transmit binary input frames over dedicated wireless link with &lt; 25ms SLA round-trip latency.
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">STAGE 03</div>
+          <div class="flow-step-title">⚡ ESP32-S3 Bridge</div>
+          <div class="flow-step-desc">
+            FreeRTOS dual-core engine decodes frames on Core 0 and injects USB HID reports via TinyUSB driver on Core 1 in parallel.
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">STAGE 04</div>
+          <div class="flow-step-title">💻 Target Host PC</div>
+          <div class="flow-step-desc">
+            Native hardware USB PHY receives standard differential D+/D- signals. Zero host drivers, zero software agents, zero network inbound ports.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 ACADEMIC PORTFOLIO & PUBLICATIONS -->
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <h2 class="section-title">Project Portfolio &amp; Technical Documents</h2>
+    </div>
+    <p class="section-desc">
+      Read or download the complete academic documentation, research reports, posters, and presentation decks.
+    </p>
+
+    <div class="portfolio-grid">
+
+      <!-- FINAL REPORT -->
+      <a href="FINAL_PROJECT_REPORT.pdf" class="doc-card" target="_blank">
+        <div>
+          <span class="doc-badge pdf">Technical Paper</span>
+          <div class="doc-title">Final Project Report</div>
+          <div class="doc-desc">
+            Comprehensive 50+ page engineering research document detailing hardware architecture, FreeRTOS firmware, benchmark results, and security analysis.
+          </div>
+        </div>
+        <div class="doc-footer">
+          <span>📄 PDF · 953 KB</span>
+          <span>View / Download →</span>
+        </div>
+      </a>
+
+      <!-- EXHIBITION POSTER (A1) -->
+      <a href="EXHIBITION_POSTER.pdf" class="doc-card" target="_blank">
+        <div>
+          <span class="doc-badge poster">Official Poster</span>
+          <div class="doc-title">Exhibition Poster (A1)</div>
+          <div class="doc-desc">
+            Full-scale vector A1 exhibition poster prepared for the 2026 TUT Computer Systems Engineering Project Exhibition floor display.
+          </div>
+        </div>
+        <div class="doc-footer">
+          <span>🖼️ Vector PDF · 240 KB</span>
+          <span>View / Download →</span>
+        </div>
+      </a>
+
+      <!-- EXHIBITION POSTER (A3) -->
+      <a href="EXHIBITION_POSTER_A3.pdf" class="doc-card" target="_blank">
+        <div>
+          <span class="doc-badge poster">Print Ready</span>
+          <div class="doc-title">Exhibition Poster (A3)</div>
+          <div class="doc-desc">
+            Compact A3 desktop print edition of the exhibition poster with scannable QR code and high-resolution architecture diagrams.
+          </div>
+        </div>
+        <div class="doc-footer">
+          <span>🖼️ Vector PDF · 631 KB</span>
+          <span>View / Download →</span>
+        </div>
+      </a>
+
+      <!-- DEFENSE SLIDES -->
+      <a href="PRESENTATION_SLIDES.pdf" class="doc-card" target="_blank">
+        <div>
+          <span class="doc-badge slides">Presentation</span>
+          <div class="doc-title">Project Defense Slides</div>
+          <div class="doc-desc">
+            Slide deck for the academic evaluation panel covering problem statement, engineering approach, bench tests, and commercial viability.
+          </div>
+        </div>
+        <div class="doc-footer">
+          <span>📊 PDF · 1.1 MB</span>
+          <span>View / Download →</span>
+        </div>
+      </a>
+
+      <!-- USER MANUAL -->
+      <a href="USER_MANUAL.pdf" class="doc-card" target="_blank">
+        <div>
+          <span class="doc-badge manual">Operations</span>
+          <div class="doc-title">User &amp; Operations Manual</div>
+          <div class="doc-desc">
+            Step-by-step instructions for hardware assembly, pinouts, ESP-IDF flashing, mobile app setup, and recovery workflows.
+          </div>
+        </div>
+        <div class="doc-footer">
+          <span>📖 PDF · 441 KB</span>
+          <span>View / Download →</span>
+        </div>
+      </a>
+
+      <!-- DEFENSE PREP GUIDE -->
+      <a href="PROJECT_DEFENSE_PREPARATION_GUIDE.pdf" class="doc-card" target="_blank">
+        <div>
+          <span class="doc-badge manual">Defense Guide</span>
+          <div class="doc-title">Defense Preparation Guide</div>
+          <div class="doc-desc">
+            Anticipated panel viva questions, examiner talking points, technical benchmarks, and defense strategy.
+          </div>
+        </div>
+        <div class="doc-footer">
+          <span>📋 PDF · 449 KB</span>
+          <span>View / Download →</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+      <div class="footer-left">
+        <strong>Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</strong><br>
+        Tshwane University of Technology (TUT) · Dept. of Computer Systems Engineering<br>
+        Student: <strong>Oratile Innocent Tshosetso</strong> (222883253) · Supervisors: Muwanguzi Mark Ntume &amp; Chunling Du
+      </div>
+      <div style="text-align: right;">
+        <div>Contact: <a href="mailto:oratileinnocent.45@gmail.com" style="color: var(--accent); text-decoration: none;">oratileinnocent.45@gmail.com</a></div>
+        <div style="margin-top: 4px;">Phone: +27 76 950 6870</div>
+        <div style="margin-top: 6px; font-weight: 700; color: var(--mint);">#fromGOOD2GREAT</div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- INTERACTIVE SIMULATOR LOGIC -->
+  <script>
+    // State variables
+    let packetCount = 0;
+    let leftClicks = 0;
+    let rightClicks = 0;
+    let cursorX = 50; // percentage
+    let cursorY = 50; // percentage
+    let isDragging = false;
+    let lastTouchX = null;
+    let lastTouchY = null;
+
+    // DOM Elements
+    const trackpad = document.getElementById('trackpad');
+    const trackpadCursor = document.getElementById('trackpad-cursor');
+    const trackpadHint = document.getElementById('trackpad-hint');
+    const hostCursor = document.getElementById('host-cursor');
+    const cursorPulse = document.getElementById('cursor-pulse');
+    const deltaVal = document.getElementById('delta-val');
+    const packetCountVal = document.getElementById('packet-count');
+    const hidHexStream = document.getElementById('hid-hex-stream');
+    const rttVal = document.getElementById('rtt-val');
+    const leftCount = document.getElementById('left-count');
+    const rightCount = document.getElementById('right-count');
+    const btnLeft = document.getElementById('btn-left-click');
+    const btnRight = document.getElementById('btn-right-click');
+    const btnScrollUp = document.getElementById('btn-scroll-up');
+    const btnScrollDown = document.getElementById('btn-scroll-down');
+    const virtualScreen = document.getElementById('virtual-screen');
+
+    // Tab switching
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabViews = {
+      bios: document.getElementById('view-bios'),
+      windows: document.getElementById('view-windows'),
+      linux: document.getElementById('view-linux')
+    };
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.dataset.tab;
+        Object.keys(tabViews).forEach(key => {
+          tabViews[key].classList.toggle('active', key === target);
+        });
+      });
+    });
+
+    // Update Host Cursor Position
+    function updateHostCursor(dx, dy, btnMask = 0x00, wheel = 0) {
+      cursorX = Math.max(2, Math.min(96, cursorX + (dx * 0.4)));
+      cursorY = Math.max(4, Math.min(94, cursorY + (dy * 0.4)));
+
+      hostCursor.style.left = cursorX + '%';
+      hostCursor.style.top = cursorY + '%';
+
+      // Update HID Packet Stream
+      packetCount++;
+      packetCountVal.textContent = packetCount.toLocaleString();
+
+      const hexBtn = '0x' + btnMask.toString(16).padStart(2, '0').toUpperCase();
+      const hexDx = (dx >= 0 ? '+' : '') + dx.toString().padStart(2, '0');
+      const hexDy = (dy >= 0 ? '+' : '') + dy.toString().padStart(2, '0');
+      const hexWhl = '0x' + (wheel & 0xFF).toString(16).padStart(2, '0').toUpperCase();
+
+      deltaVal.textContent = `dX: ${hexDx} dY: ${hexDy}`;
+      hidHexStream.textContent = `[0x01, BTN:${hexBtn}, dX:${hexDx}, dY:${hexDy}, WHL:${hexWhl}] // TinyUSB Core 1 OK`;
+
+      // Jitter RTT slightly for realism (11.2 - 12.4 ms)
+      const rtt = (11.2 + Math.random() * 1.2).toFixed(1);
+      rttVal.textContent = `${rtt} ms`;
+    }
+
+    // Trigger Click Visual Feedback
+    function pulseHostCursor() {
+      cursorPulse.style.opacity = '1';
+      cursorPulse.style.transform = 'scale(1.8)';
+      setTimeout(() => {
+        cursorPulse.style.opacity = '0';
+        cursorPulse.style.transform = 'scale(0.8)';
+      }, 200);
+    }
+
+    // Pointer event handling on trackpad
+    trackpad.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      trackpad.setPointerCapture(e.pointerId);
+      trackpad.classList.add('active');
+      trackpadHint.style.opacity = '0.15';
+      trackpadCursor.style.display = 'block';
+
+      const rect = trackpad.getBoundingClientRect();
+      lastTouchX = e.clientX;
+      lastTouchY = e.clientY;
+
+      trackpadCursor.style.left = (e.clientX - rect.left) + 'px';
+      trackpadCursor.style.top = (e.clientY - rect.top) + 'px';
+    });
+
+    trackpad.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+
+      const rect = trackpad.getBoundingClientRect();
+      const currentX = e.clientX;
+      const currentY = e.clientY;
+
+      const dx = Math.round((currentX - lastTouchX) * 1.2);
+      const dy = Math.round((currentY - lastTouchY) * 1.2);
+
+      lastTouchX = currentX;
+      lastTouchY = currentY;
+
+      trackpadCursor.style.left = (currentX - rect.left) + 'px';
+      trackpadCursor.style.top = (currentY - rect.top) + 'px';
+
+      if (dx !== 0 || dy !== 0) {
+        updateHostCursor(dx, dy, 0x00, 0);
+      }
+    });
+
+    function endPointer(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      trackpad.classList.remove('active');
+      trackpadCursor.style.display = 'none';
+      trackpadHint.style.opacity = '1';
+    }
+
+    trackpad.addEventListener('pointerup', endPointer);
+    trackpad.addEventListener('pointercancel', endPointer);
+
+    // Mouse Buttons
+    btnLeft.addEventListener('click', () => {
+      leftClicks++;
+      leftCount.textContent = `(${leftClicks})`;
+      pulseHostCursor();
+      updateHostCursor(0, 0, 0x01, 0);
+      btnLeft.classList.add('active');
+      setTimeout(() => btnLeft.classList.remove('active'), 150);
+    });
+
+    btnRight.addEventListener('click', () => {
+      rightClicks++;
+      rightCount.textContent = `(${rightClicks})`;
+      pulseHostCursor();
+      updateHostCursor(0, 0, 0x02, 0);
+      btnRight.classList.add('active');
+      setTimeout(() => btnRight.classList.remove('active'), 150);
+    });
+
+    btnScrollUp.addEventListener('click', () => {
+      updateHostCursor(0, 0, 0x00, 1);
+    });
+
+    btnScrollDown.addEventListener('click', () => {
+      updateHostCursor(0, 0, 0x00, -1);
+    });
+
+    // Simulated Clock for BIOS and Windows
+    function updateClocks() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      
+      const biosClock = document.getElementById('bios-clock');
+      const winClock = document.getElementById('win-clock');
+      if (biosClock) biosClock.textContent = `${h}:${m}:${s}`;
+      if (winClock) winClock.textContent = `${h}:${m}`;
+    }
+    setInterval(updateClocks, 1000);
+    updateClocks();
+  </script>
+
+</body>
+</html>

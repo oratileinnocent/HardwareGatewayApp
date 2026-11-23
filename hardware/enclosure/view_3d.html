@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32-S3 Hardware Gateway - 3D Virtual Twin & Enclosure Viewer (Spacious Edition)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #070A10;
+      color: #E2E8F0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+    }
+    #canvas-container {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+    .hud {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid #1E293B;
+      border-radius: 14px;
+      padding: 22px 26px;
+      max-width: 440px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+    }
+    h1 {
+      font-size: 19px;
+      font-weight: 700;
+      color: #00F2FE;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    p {
+      font-size: 12.5px;
+      color: #94A3B8;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-size: 11.5px;
+      background: #090E17;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #1E293B;
+      margin-bottom: 14px;
+    }
+    .spec-item span { color: #55D6BE; font-weight: 600; }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .btn {
+      background: #1E293B;
+      color: #FFF;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:hover { background: #00F2FE; color: #000; border-color: #00F2FE; }
+    .btn.active { background: #00F2FE; color: #000; }
+    .stl-downloads {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #1E293B;
+    }
+    .stl-downloads h2 {
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748B;
+      margin-bottom: 8px;
+    }
+    .stl-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .stl-link {
+      background: #0F172A;
+      border: 1px solid #22D3EE;
+      color: #22D3EE;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    .stl-link:hover {
+      background: #22D3EE;
+      color: #000;
+    }
+    .legend {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid #1E293B;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 11px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+</head>
+<body>
+  <div class="hud">
+    <h1><span>✨</span> Spacious Gateway Enclosure</h1>
+    <p>Expanded high-clearance edition with <b>7.55mm wire channels</b> on both sides, <b>13.0mm deep pin trough</b> for downward header pins + female DuPont sockets, and generous <b>26.6mm rear bay</b>.</p>
+    
+    <div class="specs">
+      <div class="spec-item">Outer: <span>48 x 90 x 22.4 mm</span></div>
+      <div class="spec-item">Pin Cavity: <span>13.0 mm (Extra Deep)</span></div>
+      <div class="spec-item">Cavity: <span>43.6 x 85.6 mm</span></div>
+      <div class="spec-item">Wire Channels: <span>7.55 mm per side</span></div>
+    </div>
+
+    <div class="controls">
+      <div class="btn-row">
+        <button class="btn active" id="btn-view-assembled">📦 Assembled</button>
+        <button class="btn" id="btn-view-xray">🔬 X-Ray / Inside</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="btn-explode">🚀 Exploded View</button>
+        <button class="btn" id="btn-reset">🔄 Reset Camera</button>
+      </div>
+    </div>
+
+    <div class="stl-downloads">
+      <h2>Spacious Production STL Files:</h2>
+      <div class="stl-links">
+        <a class="stl-link" href="enclosure_full_set.stl" download>⚡ Full Set (All-in-1)</a>
+        <a class="stl-link" href="enclosure_base.stl" download>Spacious Base</a>
+        <a class="stl-link" href="enclosure_lid.stl" download>Spacious Lid</a>
+        <a class="stl-link" href="button_plunger.stl" download>Button Plunger</a>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="dot" style="background:#1E293B; border:1px solid #334155;"></span> PETG Case</div>
+      <div class="legend-item"><span class="dot" style="background:#0A2540;"></span> ESP32-S3 PCB</div>
+      <div class="legend-item"><span class="dot" style="background:#C4CBD4;"></span> RF Shield Can</div>
+      <div class="legend-item"><span class="dot" style="background:#55D6BE;"></span> PWR LED</div>
+      <div class="legend-item"><span class="dot" style="background:#00F2FE;"></span> ACT LED</div>
+      <div class="legend-item"><span class="dot" style="background:#FFB300;"></span> Microswitch</div>
+    </div>
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <script>
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x060911);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(95, 120, 105);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.target.set(24, 45, 11);
+
+    // Floor Grid
+    const gridHelper = new THREE.GridHelper(200, 24, 0x1E293B, 0x0F172A);
+    gridHelper.position.set(24, 45, -0.1);
+    gridHelper.rotation.x = Math.PI / 2;
+    scene.add(gridHelper);
+
+    // Studio Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const keyLight = new THREE.DirectionalLight(0x00F2FE, 1.25);
+    keyLight.position.set(100, 120, 140);
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0x55D6BE, 0.85);
+    fillLight.position.set(-80, -100, 90);
+    scene.add(fillLight);
+
+    const bottomLight = new THREE.DirectionalLight(0xFFFFFF, 0.35);
+    bottomLight.position.set(0, 0, -50);
+    scene.add(bottomLight);
+
+    // Case Materials
+    const baseMaterial = new THREE.MeshStandardMaterial({
+      color: 0x121A2C,
+      roughness: 0.45,
+      metalness: 0.2
+    });
+    const lidMaterial = new THREE.MeshStandardMaterial({
+      color: 0x1C273E,
+      roughness: 0.4,
+      metalness: 0.25,
+      transparent: true,
+      opacity: 0.96
+    });
+    const buttonPlungerMaterial = new THREE.MeshStandardMaterial({
+      color: 0x00F2FE,
+      roughness: 0.25,
+      metalness: 0.5
+    });
+
+    let baseMesh, lidMesh, btnMesh;
+    const componentsGroup = new THREE.Group();
+    scene.add(componentsGroup);
+
+    // 1. ESP32-S3 PCB (Centered at X = 24.0mm, Y = 57.8mm, Z = 15.8mm)
+    const pcbGeo = new THREE.BoxGeometry(28.5, 58.0, 1.6);
+    const pcbMat = new THREE.MeshStandardMaterial({ color: 0x0A2540, roughness: 0.35 });
+    const pcbMesh = new THREE.Mesh(pcbGeo, pcbMat);
+    pcbMesh.position.set(24.0, 57.8, 15.0 + 0.8);
+    componentsGroup.add(pcbMesh);
+
+    // Gold PCB Antenna Trace (at rear end of PCB)
+    const antGeo = new THREE.BoxGeometry(18.0, 7.0, 0.2);
+    const antMat = new THREE.MeshStandardMaterial({ color: 0xDAA520, metalness: 0.9, roughness: 0.2 });
+    const antMesh = new THREE.Mesh(antGeo, antMat);
+    antMesh.position.set(24.0, 32.8, 16.7);
+    componentsGroup.add(antMesh);
+
+    // Pre-Welded Yellow Pin Headers with downward male pins (8.5mm length)
+    const headerMat = new THREE.MeshStandardMaterial({ color: 0xE6C010, roughness: 0.5 });
+    const pinMat = new THREE.MeshStandardMaterial({ color: 0xD0D0D0, metalness: 0.9 });
+    for (const hx of [-12.7, 12.7]) {
+      const hStripGeo = new THREE.BoxGeometry(2.5, 50.0, 2.5);
+      const hStrip = new THREE.Mesh(hStripGeo, headerMat);
+      hStrip.position.set(24.0 + hx, 60.0, 13.75);
+      componentsGroup.add(hStrip);
+
+      // Downward pins hanging in generous 13.0mm cavity
+      const pinGeo = new THREE.BoxGeometry(0.7, 48.0, 8.5);
+      const pinMesh = new THREE.Mesh(pinGeo, pinMat);
+      pinMesh.position.set(24.0 + hx, 60.0, 8.25);
+      componentsGroup.add(pinMesh);
+    }
+
+    // ESP32 Metal RF Shielding Can ("ESP32-S3-WROOM-1")
+    const rfGeo = new THREE.BoxGeometry(16.0, 18.0, 2.8);
+    const rfMat = new THREE.MeshStandardMaterial({ color: 0xC4CBD4, metalness: 0.85, roughness: 0.25 });
+    const rfMesh = new THREE.Mesh(rfGeo, rfMat);
+    rfMesh.position.set(24.0, 50.8, 17.4);
+    componentsGroup.add(rfMesh);
+
+    // Dual USB-C Receptacles (Left: Native USB at X=15.25, Right: COM at X=28.25)
+    const usbMat = new THREE.MeshStandardMaterial({ color: 0xD8DEE9, metalness: 0.95, roughness: 0.2 });
+    const usbGeo = new THREE.BoxGeometry(9.0, 7.5, 3.2);
+    
+    // Left: Native USB (Exposed)
+    const usbNative = new THREE.Mesh(usbGeo, usbMat);
+    usbNative.position.set(15.25, 86.8, 17.6);
+    componentsGroup.add(usbNative);
+
+    // Right: COM USB (Sealed inside)
+    const usbComMat = new THREE.MeshStandardMaterial({ color: 0x64748B, metalness: 0.7, roughness: 0.5 });
+    const usbCom = new THREE.Mesh(usbGeo, usbComMat);
+    usbCom.position.set(28.25, 86.8, 17.6);
+    componentsGroup.add(usbCom);
+
+    // 2. Tactile Push Button Switch (at X=24.0, Y=14.0 in spacious rear bay)
+    const switchBaseGeo = new THREE.BoxGeometry(6.5, 6.5, 3.8);
+    const switchBaseMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7 });
+    const switchBase = new THREE.Mesh(switchBaseGeo, switchBaseMat);
+    switchBase.position.set(24.0, 14.0, 7.5 + 1.9);
+    componentsGroup.add(switchBase);
+
+    const switchTopGeo = new THREE.CylinderGeometry(1.7, 1.7, 1.8, 16);
+    const switchTopMat = new THREE.MeshStandardMaterial({ color: 0xFFB300, metalness: 0.3 });
+    const switchTop = new THREE.Mesh(switchTopGeo, switchTopMat);
+    switchTop.rotation.x = Math.PI / 2;
+    switchTop.position.set(24.0, 14.0, 12.2);
+    componentsGroup.add(switchTop);
+
+    // 3. Status LEDs (at Y = 38.0mm)
+    function createLed(colorHex, emissiveHex, x, y) {
+      const ledGroup = new THREE.Group();
+      const domeGeo = new THREE.SphereGeometry(1.5, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+      const ledMat = new THREE.MeshStandardMaterial({
+        color: colorHex,
+        emissive: emissiveHex,
+        emissiveIntensity: 0.85,
+        roughness: 0.1,
+        transparent: true,
+        opacity: 0.9
+      });
+      const dome = new THREE.Mesh(domeGeo, ledMat);
+      dome.rotation.x = -Math.PI / 2;
+      dome.position.set(x, y, 18.5);
+      ledGroup.add(dome);
+
+      const light = new THREE.PointLight(emissiveHex, 0.45, 25);
+      light.position.set(x, y, 19.2);
+      ledGroup.add(light);
+
+      const legMat = new THREE.MeshStandardMaterial({ color: 0xCCCCCC, metalness: 0.9 });
+      for (const lx of [-0.6, 0.6]) {
+        const legGeo = new THREE.CylinderGeometry(0.2, 0.2, 8.0, 8);
+        const leg = new THREE.Mesh(legGeo, legMat);
+        leg.position.set(x + lx, y, 14.0);
+        ledGroup.add(leg);
+      }
+      return ledGroup;
+    }
+
+    const led1 = createLed(0x55D6BE, 0x55D6BE, 18.0, 38.0); // PWR (Mint)
+    const led2 = createLed(0x00F2FE, 0x00F2FE, 30.0, 38.0); // ACT (Cyan)
+    componentsGroup.add(led1);
+    componentsGroup.add(led2);
+
+    // Load 3D Printed STLs
+    const loader = new THREE.STLLoader();
+    let isExploded = false;
+
+    loader.load('enclosure_base.stl', function (geometry) {
+      geometry.computeVertexNormals();
+      baseMesh = new THREE.Mesh(geometry, baseMaterial);
+      scene.add(baseMesh);
+    });
+
+    loader.load('enclosure_lid.stl', function (geometry) {
+      geometry.computeVertexNormals();
+      lidMesh = new THREE.Mesh(geometry, lidMaterial);
+      lidMesh.position.set(0, 0, 18.5);
+      scene.add(lidMesh);
+    });
+
+    loader.load('button_plunger.stl', function (geometry) {
+      geometry.computeVertexNormals();
+      btnMesh = new THREE.Mesh(geometry, buttonPlungerMaterial);
+      btnMesh.position.set(24.0, 14.0, 18.5);
+      scene.add(btnMesh);
+    });
+
+    // View Modes
+    document.getElementById('btn-view-assembled').addEventListener('click', () => {
+      setMode('assembled');
+    });
+    document.getElementById('btn-view-xray').addEventListener('click', () => {
+      setMode('xray');
+    });
+    document.getElementById('btn-explode').addEventListener('click', () => {
+      isExploded = !isExploded;
+      document.getElementById('btn-explode').classList.toggle('active', isExploded);
+    });
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      camera.position.set(95, 120, 105);
+      controls.target.set(24, 45, 11);
+    });
+
+    function setMode(mode) {
+      document.getElementById('btn-view-assembled').classList.toggle('active', mode === 'assembled');
+      document.getElementById('btn-view-xray').classList.toggle('active', mode === 'xray');
+
+      if (mode === 'xray') {
+        lidMaterial.opacity = 0.28;
+        baseMaterial.opacity = 0.55;
+        baseMaterial.transparent = true;
+      } else {
+        lidMaterial.opacity = 0.96;
+        baseMaterial.opacity = 1.0;
+        baseMaterial.transparent = false;
+      }
+    }
+
+    function updateAnimation() {
+      if (!lidMesh || !btnMesh) return;
+      const targetLidZ = isExploded ? 48.0 : 18.5;
+      const targetBtnZ = isExploded ? 68.0 : 18.5;
+
+      lidMesh.position.z += (targetLidZ - lidMesh.position.z) * 0.12;
+      btnMesh.position.z += (targetBtnZ - btnMesh.position.z) * 0.12;
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      updateAnimation();
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

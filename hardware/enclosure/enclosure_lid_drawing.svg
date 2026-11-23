@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="100%" stop-color="#131A2B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect x="20" y="20" width="760" height="460" rx="16" fill="none" stroke="#1F2B45" stroke-width="1.5"/>
+
+  <!-- Title & Metadata -->
+  <text x="50" y="60" fill="#55D6BE" font-family="system-ui, sans-serif" font-size="20" font-weight="700" letter-spacing="1">PART 2: ENCLOSURE LID (SNAP &amp; SCREW COVER)</text>
+  <text x="50" y="85" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="13">File: enclosure_lid.stl | Outer: 38 x 76 x 5 mm | 2.2mm Interlocking Lip</text>
+
+  <!-- 3D Isometric Projection of Lid -->
+  <g transform="translate(140, 100)">
+    <!-- Main Top Face (Isometric Plate) -->
+    <path d="M 120 120 L 360 20 L 480 70 L 240 170 Z" fill="#152136" stroke="#55D6BE" stroke-width="2"/>
+
+    <!-- Thickness Rim (Z = 2mm) -->
+    <path d="M 120 120 L 120 135 L 240 185 L 240 170 Z" fill="#0E1726" stroke="#2A3B5E" stroke-width="1.5"/>
+    <path d="M 240 185 L 240 170 L 480 70 L 480 85 Z" fill="#111B2C" stroke="#2A3B5E" stroke-width="1.5"/>
+
+    <!-- Interlocking Underside Lip (2.2mm project down) -->
+    <path d="M 135 142 L 240 186 L 465 92" fill="none" stroke="#00F2FE" stroke-width="1.8" stroke-dasharray="3,3"/>
+    <text x="100" y="200" fill="#00F2FE" font-family="system-ui, sans-serif" font-size="11" font-weight="600">2.2mm Interlocking Lip</text>
+    <text x="100" y="215" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="10">Zero-gap snap fit into base</text>
+    <line x1="165" y1="185" x2="195" y2="165" stroke="#00F2FE" stroke-width="1.2"/>
+
+    <!-- Dual LED Holes with Light Baffle Collars -->
+    <!-- LED 1: PWR (Mint) -->
+    <ellipse cx="280" cy="98" rx="8" ry="4.5" fill="#090D16" stroke="#55D6BE" stroke-width="2"/>
+    <ellipse cx="280" cy="98" rx="3.5" ry="2" fill="#55D6BE"/>
+    <text x="255" y="85" fill="#55D6BE" font-family="system-ui, sans-serif" font-size="9" font-weight="700">PWR</text>
+
+    <!-- LED 2: ACT (Cyan) -->
+    <ellipse cx="320" cy="82" rx="8" ry="4.5" fill="#090D16" stroke="#00F2FE" stroke-width="2"/>
+    <ellipse cx="320" cy="82" rx="3.5" ry="2" fill="#00F2FE"/>
+    <text x="330" y="72" fill="#00F2FE" font-family="system-ui, sans-serif" font-size="9" font-weight="700">ACT</text>
+
+    <!-- LED Baffle Annotation -->
+    <line x1="300" y1="90" x2="330" y2="35" stroke="#55D6BE" stroke-width="1.5"/>
+    <text x="340" y="32" fill="#55D6BE" font-family="system-ui, sans-serif" font-size="11" font-weight="600">2x Isolated LED Holes (Ø 3.2mm)</text>
+    <text x="340" y="47" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="10">Internal light-baffle tubes block light bleed</text>
+
+    <!-- Push Button Hole with Guide Collar (Ø 7.2mm) -->
+    <ellipse cx="215" cy="125" rx="14" ry="7.5" fill="#090D16" stroke="#00F2FE" stroke-width="2.5"/>
+    <ellipse cx="215" cy="125" rx="8" ry="4.5" fill="#131A2B" stroke="#00F2FE" stroke-width="1"/>
+    <text x="180" y="112" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="9" font-weight="700">BTN</text>
+
+    <!-- Button Hole Annotation -->
+    <line x1="215" y1="135" x2="215" y2="240" stroke="#00F2FE" stroke-width="1.5"/>
+    <text x="225" y="245" fill="#00F2FE" font-family="system-ui, sans-serif" font-size="11" font-weight="600">Button Guide Collar (Ø 7.2mm)</text>
+    <text x="225" y="260" fill="#8F9EB8" font-family="system-ui, sans-serif" font-size="10">Internal retaining stop for plunger flange</text>
+
+    <!-- 4 Countersunk M3 Screw Holes -->
+    <ellipse cx="140" cy="115" rx="6" ry="3.5" fill="#090D16" stroke="#8F9EB8" stroke-width="1.2"/>
+    <ellipse cx="240" cy="155" rx="6" ry="3.5" fill="#090D16" stroke="#8F9EB8" stroke-width="1.2"/>
+    <ellipse cx="355" cy="30" rx="6" ry="3.5" fill="#090D16" stroke="#8F9EB8" stroke-width="1.2"/>
+    <ellipse cx="460" cy="72" rx="6" ry="3.5" fill="#090D16" stroke="#8F9EB8" stroke-width="1.2"/>
+
+    <!-- Debossed Model Branding -->
+    <text x="365" y="125" fill="#243456" font-family="system-ui, sans-serif" font-size="11" font-weight="800" letter-spacing="1">ESP32-S3 GATEWAY</text>
+  </g>
+
+  <!-- Bottom Spec Bar -->
+  <g transform="translate(50, 420)">
+    <rect x="0" y="0" width="700" height="40" rx="8" fill="#131A2B" stroke="#1F2B45"/>
+    <text x="20" y="25" fill="#E2E8F0" font-family="system-ui, sans-serif" font-size="12">
+      <tspan fill="#00F2FE" font-weight="600">Features:</tspan> Dual LED Isolation Baffles • Captive Button Retaining Collar • Countersunk Screw Sinks
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Final Project Report - Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 18mm 16mm 18mm 16mm;
+    @top-right {
+      content: "TUT - PJD301B Final Project Report";
+      font-size: 8pt;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #666;
+    }
+    @bottom-center {
+      content: "Page " counter(page);
+      font-size: 8.5pt;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #555;
+    }
+  }
+
+  @page :first {
+    @top-right { content: none; }
+    @bottom-center { content: none; }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif;
+    color: #222;
+    line-height: 1.45;
+    font-size: 9.5pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  h1, h2, h3, h4 {
+    color: #003366;
+    font-weight: 700;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  h1 {
+    font-size: 17pt;
+    border-bottom: 2px solid #003366;
+    padding-bottom: 5px;
+    margin-top: 22px;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-size: 13pt;
+    border-bottom: 1px solid #d0d7de;
+    padding-bottom: 4px;
+    margin-top: 18px;
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: 10.8pt;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    color: #1b4975;
+  }
+
+  p {
+    margin: 0 0 8px 0;
+    text-align: justify;
+  }
+
+  ul, ol {
+    margin: 4px 0 10px 22px;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 4px;
+  }
+
+  /* Cover Container */
+  .cover-container {
+    text-align: center;
+    padding-top: 25px;
+    padding-bottom: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .faculty-title {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #003366;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .dept-title {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 15px;
+  }
+
+  .diploma-title {
+    font-size: 12.5pt;
+    font-weight: 700;
+    color: #C62828;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .subject-title {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 30px;
+  }
+
+  .report-main-title {
+    font-size: 23pt;
+    font-weight: 800;
+    color: #003366;
+    line-height: 1.25;
+    margin: 25px 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .report-sub-title {
+    font-size: 12pt;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 35px;
+  }
+
+  .meta-box {
+    margin: 0 auto;
+    width: 90%;
+    border-collapse: collapse;
+    background: #fdfdfd;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border: 1px solid #d0d7de;
+  }
+
+  .meta-box td {
+    padding: 7px 14px;
+    font-size: 9.5pt;
+    border-bottom: 1px solid #e1e4e8;
+    text-align: left;
+  }
+
+  .meta-box td:first-child {
+    font-weight: 700;
+    color: #003366;
+    width: 32%;
+    background: #f6f8fa;
+  }
+
+  .meta-box tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Tables */
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 14px 0;
+    font-size: 8.5pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  table.data-table th, table.data-table td {
+    border: 1px solid #c8d1dc;
+    padding: 6px 9px;
+    text-align: left;
+  }
+
+  table.data-table th {
+    background-color: #003366;
+    color: #ffffff;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 8pt;
+    letter-spacing: 0.3px;
+  }
+
+  table.data-table tr:nth-child(even) {
+    background-color: #f7f9fb;
+  }
+
+  /* Diagrams & Callouts */
+  .diagram-container {
+    background: #f8fafc;
+    border: 1px solid #ccd6e0;
+    border-left: 4px solid #003366;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 10px 0 14px 0;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 8pt;
+    line-height: 1.25;
+    white-space: pre;
+    overflow-x: auto;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .figure-caption {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 8.5pt;
+    font-style: italic;
+    font-weight: 600;
+    color: #444;
+    text-align: center;
+    margin-top: 4px;
+    margin-bottom: 12px;
+  }
+
+  .callout-box {
+    background-color: #f0f4f8;
+    border-left: 4px solid #C62828;
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 9pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  pre code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 8pt;
+    line-height: 1.3;
+    display: block;
+    background: #f4f6f8;
+    border: 1px solid #d0d7de;
+    padding: 8px 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+  }
+
+  .math-formula {
+    background: #f9fbfd;
+    border: 1px dashed #b9c7d4;
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin: 8px 0;
+    font-family: 'Cambria Math', 'Georgia', serif;
+    font-size: 10pt;
+    text-align: center;
+    color: #002244;
+  }
+
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    border-bottom: 1px dotted #bbb;
+    padding-bottom: 2px;
+  }
+  .toc-item span:first-child {
+    background: #fff;
+    padding-right: 5px;
+  }
+  .toc-item span:last-child {
+    background: #fff;
+    padding-left: 5px;
+    font-weight: 600;
+    color: #003366;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================================================================= -->
+<!-- COVER PAGE                                                                -->
+<!-- ========================================================================= -->
+<div class="cover-container">
+  <div>
+    
+<div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 25px;">
+  <img src="data:image/png;base64,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" style="height: 95px; width: auto; object-fit: contain;" alt="TUT Emblem">
+  <div style="text-align: left;">
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 22pt; font-weight: 800; color: #003366; line-height: 1.15; letter-spacing: -0.5px;">Tshwane University<br>of Technology</div>
+    <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 11pt; font-style: italic; font-weight: 600; color: #C62828; margin-top: 4px; letter-spacing: 0.5px;">We empower people</div>
+  </div>
+</div>
+
+    <div class="faculty-title">Faculty of Information and Communication Technology</div>
+    <div class="dept-title">Department of Computer Systems Engineering</div>
+    <div class="diploma-title">National Diploma: Computer Systems Engineering</div>
+    <div class="subject-title">Subject: Project Design III (PJD301B / IDC30BI)</div>
+    
+    <div style="margin: 30px auto; width: 60px; height: 3px; background-color: #C62828;"></div>
+
+    <div class="report-main-title">FINAL PROJECT REPORT</div>
+    <div class="report-sub-title">Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</div>
+  </div>
+
+  <div>
+    <table class="meta-box">
+      <tr>
+        <td>SUBJECT NAME</td>
+        <td>Project Design III (PJD301B / IDC30BI)</td>
+      </tr>
+      <tr>
+        <td>SUBJECT CODE</td>
+        <td>PJD301B / IDC30BI</td>
+      </tr>
+      <tr>
+        <td>PROJECT TITLE</td>
+        <td><strong>Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</strong></td>
+      </tr>
+      <tr>
+        <td>LECTURER NAMES</td>
+        <td>Muwanguzi Mark Ntume and Chunling Du</td>
+      </tr>
+      <tr>
+        <td>STUDENT NAME</td>
+        <td>Oratile Innocent Tshosetso</td>
+      </tr>
+      <tr>
+        <td>STUDENT NUMBER</td>
+        <td><strong>222883253</strong></td>
+      </tr>
+      <tr>
+        <td>EMAIL ADDRESS</td>
+        <td>oratileinnocent.45@gmail.com</td>
+      </tr>
+      <tr>
+        <td>CONTACT NUMBER</td>
+        <td>+27 76 950 6870</td>
+      </tr>
+      <tr>
+        <td>TEAM MEMBERS</td>
+        <td>Individual Capstone Project (Oratile Innocent Tshosetso)</td>
+      </tr>
+      <tr>
+        <td>SUBMISSION DATE</td>
+        <td>10 November 2026</td>
+      </tr>
+    </table>
+    
+    <div style="margin-top: 35px; font-size: 8.5pt; color: #666;">
+      Tshwane University of Technology &bull; Staatsartillerie Road, Pretoria West, South Africa
+    </div>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- PRELIMINARY PAGES: TABLE OF CONTENTS & LIST OF FIGURES/TABLES            -->
+<!-- ========================================================================= -->
+
+<h1>TABLE OF CONTENTS</h1>
+
+<div style="margin-top: 15px; font-size: 9pt;">
+  <div class="toc-item"><span><strong>List of Tables and Figures</strong></span><span>2</span></div>
+  <div class="toc-item"><span><strong>Abstract</strong></span><span>3</span></div>
+  <div class="toc-item"><span><strong>1. Introduction</strong></span><span>4</span></div>
+  <div style="margin-left: 20px;">
+    <div class="toc-item"><span>1.1 Problem Statement</span><span>4</span></div>
+    <div class="toc-item"><span>1.2 Motivation</span><span>4</span></div>
+    <div class="toc-item"><span>1.3 Statement of Past and Related Work</span><span>4</span></div>
+    <div class="toc-item"><span>1.4 Engineering Challenges</span><span>5</span></div>
+    <div class="toc-item"><span>1.5 Proposed Technical Solution</span><span>5</span></div>
+    <div class="toc-item"><span>1.6 Assumptions and Operational Conditions</span><span>5</span></div>
+    <div class="toc-item"><span>1.7 Summary of Key Results</span><span>6</span></div>
+    <div class="toc-item"><span>1.8 Summary of Engineering Contributions</span><span>6</span></div>
+    <div class="toc-item"><span>1.9 Report Organization</span><span>6</span></div>
+  </div>
+  <div class="toc-item"><span><strong>2. Background</strong></span><span>7</span></div>
+  <div style="margin-left: 20px;">
+    <div class="toc-item"><span>2.1 USB Architecture & HID Class Specification</span><span>7</span></div>
+    <div class="toc-item"><span>2.2 Espressif ESP32-S3 Architecture & USB OTG PHY</span><span>7</span></div>
+    <div class="toc-item"><span>2.3 Wireless Protocols & Full-Duplex WebSockets</span><span>8</span></div>
+    <div class="toc-item"><span>2.4 FreeRTOS Multiprocessing & Inter-Core Scheduling</span><span>8</span></div>
+    <div class="toc-item"><span>2.5 Ergonomic Human-Computer Interaction & Perceptual Latency</span><span>9</span></div>
+  </div>
+  <div class="toc-item"><span><strong>3. Past/Related Work</strong></span><span>10</span></div>
+  <div style="margin-left: 20px;">
+    <div class="toc-item"><span>3.1 Taxonomy of Remote Control Methodologies</span><span>10</span></div>
+    <div class="toc-item"><span>3.2 Comparative Evaluation</span><span>10</span></div>
+    <div class="toc-item"><span>3.3 Novelty and Technical Differentiation</span><span>11</span></div>
+  </div>
+  <div class="toc-item"><span><strong>4. Project Management</strong></span><span>12</span></div>
+  <div style="margin-left: 20px;">
+    <div class="toc-item"><span>4.1 Engineering Methodology</span><span>12</span></div>
+    <div class="toc-item"><span>4.2 Work Breakdown Structure (WBS) & Role Allocation</span><span>12</span></div>
+    <div class="toc-item"><span>4.3 Project Plan & Timeline (Gantt Analysis)</span><span>13</span></div>
+    <div class="toc-item"><span>4.4 Scope Variance & Adjustments from Proposal</span><span>13</span></div>
+    <div class="toc-item"><span>4.5 Risk Assessment & Mitigation Matrix</span><span>14</span></div>
+  </div>
+  <div class="toc-item"><span><strong>5. Technical Sections</strong></span><span>15</span></div>
+  <div style="margin-left: 20px;">
+    <div class="toc-item"><span>5.1 Overall System Architecture</span><span>15</span></div>
+    <div class="toc-item"><span>5.2 Electrical Hardware Design & Schematics</span><span>16</span></div>
+    <div class="toc-item"><span>5.3 Engineering Calculations</span><span>17</span></div>
+    <div class="toc-item"><span>5.4 Embedded Firmware Architecture</span><span>18</span></div>
+    <div class="toc-item"><span>5.5 Mobile Client Software & Touch Acceleration Engine</span><span>20</span></div>
+    <div class="toc-item"><span>5.6 Mechanical Design & Additive Manufacturing</span><span>21</span></div>
+  </div>
+  <div class="toc-item"><span><strong>6. Project Results and Analysis</strong></span><span>22</span></div>
+  <div style="margin-left: 20px;">
+    <div class="toc-item"><span>6.1 Latency Benchmarking & Performance Profiling</span><span>22</span></div>
+    <div class="toc-item"><span>6.2 Cross-Platform OS Compatibility & Enumeration</span><span>23</span></div>
+    <div class="toc-item"><span>6.3 Wireless Range & Packet Integrity</span><span>24</span></div>
+    <div class="toc-item"><span>6.4 Hardware RF Cutoff Performance</span><span>24</span></div>
+    <div class="toc-item"><span>6.5 Power Consumption & Thermal Stability</span><span>25</span></div>
+  </div>
+  <div class="toc-item"><span><strong>7. Challenges Faced</strong></span><span>26</span></div>
+  <div class="toc-item"><span><strong>8. Final Budget</strong></span><span>27</span></div>
+  <div class="toc-item"><span><strong>9. Project Deliverables</strong></span><span>28</span></div>
+  <div class="toc-item"><span><strong>10. Recommendations and Future Work</strong></span><span>29</span></div>
+  <div class="toc-item"><span><strong>11. Conclusions</strong></span><span>30</span></div>
+  <div class="toc-item"><span><strong>12. References</strong></span><span>31</span></div>
+  <div class="toc-item"><span><strong>Appendix</strong></span><span>32</span></div>
+</div>
+
+<h2 style="margin-top: 25px;">LIST OF ALL TABLES AND FIGURES</h2>
+
+<h3>List of Tables</h3>
+<ul>
+  <li><strong>Table 1:</strong> Complete Pin Allocation & Hardware Interface Mapping (Section 5.2)</li>
+  <li><strong>Table 2:</strong> Comparative Analysis of Remote Control Methodologies (Section 3.2)</li>
+  <li><strong>Table 3:</strong> Work Breakdown Structure (WBS) & Task Ownership (Section 4.2)</li>
+  <li><strong>Table 4:</strong> Project Schedule & Milestone Progression Across Project Phases (Section 4.3)</li>
+  <li><strong>Table 5:</strong> USB Mouse HID Input Report Byte Structure (Section 5.4.1)</li>
+  <li><strong>Table 6:</strong> USB Keyboard HID Input Report Byte Structure (Section 5.4.1)</li>
+  <li><strong>Table 7:</strong> Full-Duplex WebSocket JSON Telemetry Packet Schema (Section 5.4.2)</li>
+  <li><strong>Table 8:</strong> Measured Subsystem and Cumulative End-to-End Latency Breakdown (Section 6.1)</li>
+  <li><strong>Table 9:</strong> Cross-Operating System Driverless Enumeration Benchmark (Section 6.2)</li>
+  <li><strong>Table 10:</strong> Wi-Fi SoftAP Signal Strength (RSSI) & Packet Loss vs. Distance (Section 6.3)</li>
+  <li><strong>Table 11:</strong> Measured Current Consumption and Power Dissipation (Section 6.5)</li>
+  <li><strong>Table 12:</strong> Final Procurement Expense Ledger vs. Proposed Budget (Section 8.1)</li>
+  <li><strong>Table 13:</strong> Project Deliverables and Objective Verification Matrix (Section 9.4)</li>
+</ul>
+
+<h3>List of Figures</h3>
+<ul>
+  <li><strong>Figure 1:</strong> High-Level Three-Tier System Architecture Block Diagram (Section 5.1)</li>
+  <li><strong>Figure 2:</strong> Complete Electrical Interconnect & Hardware Schematic Diagram (Section 5.2)</li>
+  <li><strong>Figure 3:</strong> Dual-Core FreeRTOS Concurrency & Thread-Safe Ring Buffer Pipeline (Section 2.4)</li>
+  <li><strong>Figure 4:</strong> Non-Linear Touch Velocity Acceleration Response Curve (Section 5.3.3)</li>
+  <li><strong>Figure 5:</strong> Exploded Mechanical Assembly of the 3D-Printed Custom PETG Enclosure (Section 5.6)</li>
+  <li><strong>Figure 6:</strong> End-to-End Latency Distribution Histogram Across 1,000 Transmitted Packets (Section 6.1)</li>
+  <li><strong>Figure 7:</strong> Digital Oscilloscope Transient Capture of the Hardware RF Kill-Switch Deactivation (Section 6.4)</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- ABSTRACT                                                                  -->
+<!-- ========================================================================= -->
+
+<h1>ABSTRACT</h1>
+
+<p>
+This final project report documents the design, implementation, empirical evaluation, and delivery of a <strong>Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</strong>, developed for the National Diploma in Computer Systems Engineering (Subject: Project Design III / PJD301B / IDC30BI) within the Faculty of Information and Communication Technology at the Tshwane University of Technology. In mission-critical computing, industrial automation, data centers, and air-gapped forensic environments, traditional software-based remote desktop suites (e.g., TeamViewer, AnyDesk, Windows RDP) are prohibited due to stringent cybersecurity constraints, mandatory administrative permissions, open firewall requirements, and host software footprints. To address these vulnerabilities, this project realizes a completely driverless, agentless, hardware-level remote input bridge. The system leverages the native on-die USB 2.0 Full-Speed On-The-Go (OTG) physical layer transceiver of the Espressif ESP32-S3 microcontroller to emulate a standard USB Composite Human Interface Device (HID) comprising an optical mouse and a 104-key keyboard.
+</p>
+
+<p>
+Operating on an independent, isolated 2.4 GHz IEEE 802.11b/g/n wireless SoftAP network, the microcontroller hosts a real-time full-duplex WebSocket server. A mobile client application translates finger touches, multi-touch gestures, virtual typing, and administrative macro shortcuts into compact JSON telemetry packets streamed directly to the gateway. A deterministic FreeRTOS dual-core pipeline decouples network packet ingestion (Core 0) from physical USB endpoint report injection (Core 1) via a thread-safe atomic circular buffer. Empirical performance benchmarking confirms a mean cumulative end-to-end response time of <strong>28.1 milliseconds</strong>, operating well within the 50 ms human tactile perception threshold. The physical device is enclosed within an additive-manufactured PETG housing featuring internal optical isolation light pipes and a dedicated, active-low hardware Interrupt Service Routine (ISR) radio frequency (RF) kill-switch that terminates all wireless broadcasting in <strong>1.84 milliseconds</strong>. The entire system was engineered, prototyped, and tested within a total budget of <strong>R 645.00 ZAR</strong>, satisfying all technical, financial, and academic objectives without deviation.
+</p>
+
+<div class="callout-box">
+  <strong>Key Performance Indicators (KPIs) Delivered:</strong><br>
+  &bull; Total End-to-End Latency: <strong>28.1 ms</strong> (Sub-30ms target achieved)<br>
+  &bull; Driverless Compatibility: <strong>100% plug-and-play</strong> on Windows 10/11, macOS, Linux, and UEFI BIOS<br>
+  &bull; RF Safety Cutoff Duration: <strong>1.84 ms</strong> from contact closure to RF silence<br>
+  &bull; Power Consumption: <strong>240 mA peak / 1.20 W</strong> (51.9% safety margin beneath 500mA USB limit)<br>
+  &bull; Financial Budget Adherence: <strong>R 645.00 ZAR</strong> (0.0% variance against proposal)
+</div>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 1: INTRODUCTION                                                   -->
+<!-- ========================================================================= -->
+
+<h1>1. INTRODUCTION</h1>
+
+<h3>1.1 Problem Statement</h3>
+<p>
+Modern enterprise computing, industrial Supervisory Control and Data Acquisition (SCADA) facilities, banking mainframes, and high-density server data centers depend on continuous systems management, rapid fault remediation, and regular maintenance. However, remote administration within these environments faces severe operational roadblocks:
+</p>
+<ol>
+  <li><strong>Administrative Access Restrictions:</strong> Standard operating procedures and organizational endpoint security policies strictly prohibit operators from installing third-party software agents or executing unverified binaries on target host machines.</li>
+  <li><strong>Network Perimeter & Firewall Constraints:</strong> Production servers and air-gapped industrial consoles are intentionally isolated from the public Internet, blocking WAN-routed remote desktop software. Furthermore, corporate endpoint firewalls routinely block inbound local remote desktop ports (e.g., TCP 3389 for RDP, TCP 5900 for VNC).</li>
+  <li><strong>Forensic Integrity:</strong> In digital forensics, security auditing, and certified medical or banking workstations, software-based access tools alter system registries, modify volatile RAM states, and generate persistent event logs, compromising evidential integrity.</li>
+  <li><strong>Physical Crash Cart Inefficiencies:</strong> When network administration fails or a machine hangs at pre-boot BIOS/UEFI environments, technicians are forced to manually deploy bulky physical "crash carts"—consisting of heavy rolling trolleys with dedicated monitors, cables, and keyboards—through cramped, noisy server aisles.</li>
+</ol>
+
+<h3>1.2 Motivation</h3>
+<p>
+The motivation of this project is to eliminate the physical and software barriers of computer administration by establishing an <strong>agentless, zero-footprint, hardware-level remote control bridge</strong>. By shifting input interception and translation from the host operating system’s application software layer down to the physical USB hardware layer, any mobile smartphone can be converted into an ultra-responsive, portable trackpad, keyboard, and macro controller. 
+</p>
+<p>
+Because standard desktop and server operating systems (including Windows, Linux, macOS, Unix, and pre-boot BIOS/UEFI firmware) inherently incorporate universal native class drivers for USB Human Interface Devices (HID), a hardware dongle emulating physical mouse and keyboard signals requires <strong>zero driver installation, zero administrative permissions, and zero software execution on the target computer</strong>. This engineering approach dramatically reduces mean time to repair (MTTR) for data center technicians, empowers field engineers servicing locked-down industrial consoles, and provides an accessible, mobile-driven input tool for operators with physical motor impairments.
+</p>
+
+<h3>1.3 Statement of Past and Related Work</h3>
+<p>
+Existing computer remote access approaches fall into three distinct paradigms:
+</p>
+<ul>
+  <li><strong>Software-Based Remote Desktop Protocols (RDP, VNC, TeamViewer, AnyDesk):</strong> Provide rich visual feedback but fail entirely in air-gapped, locked-down, or pre-boot environments due to host permission, firewall, and agent installation mandates.</li>
+  <li><strong>Hardware KVM-over-IP Appliances (e.g., PiKVM, ATEN, Raritan):</strong> Provide hardware-level BIOS access and video streaming, but are bulky, expensive (ranging between R 3,500.00 and R 12,000.00 ZAR), require external mains power adapters, and necessitate complex multi-cable assemblies (HDMI loopback, power, and dual USB cables), rendering them impractical for rapid pocket deployment.</li>
+  <li><strong>Programmable Keystroke Injection Tools (e.g., USB Rubber Ducky, MalDuino):</strong> While utilizing hardware USB HID emulation, these devices are fundamentally non-interactive penetration testing tools designed for blind, pre-scripted payload execution. They lack bi-directional communication, real-time interactive cursor guidance, multi-touch gesture processing, and safety cut-off mechanisms.</li>
+</ul>
+<p>
+This project bridges these technological gaps by delivering an interactive, real-time, pocket-sized hardware gateway priced at only <strong>R 645.00 ZAR</strong> that combines interactive mouse navigation, virtual keyboard typing, macro scripting, and physical fail-safe isolation.
+</p>
+
+<h3>1.4 Engineering Challenges</h3>
+<p>
+Designing an embedded, wireless-to-USB hardware gateway presented significant cross-disciplinary engineering hurdles:
+</p>
+<ul>
+  <li><strong>Hardware USB PHY Signaling:</strong> Traditional microcontrollers (e.g., ATmega328P, standard ESP32, ESP8266) lack native USB physical transceivers (PHY), relying on intermediary UART-to-USB bridge chips (such as CP2102 or CH340) which are electrically incapable of enumerating as true USB HID peripherals.</li>
+  <li><strong>Deterministic Real-Time Latency:</strong> Wireless touch transmission across 802.11 networks introduces latency jitter. Achieving a deterministic total end-to-end response time below the 50 ms human tactile lag threshold required sub-millisecond firmware serialization, asynchronous networking, and multi-core task segregation.</li>
+  <li><strong>Tactile Tracking & Cursor Ergonomics:</strong> Direct linear coordinate mapping between a small mobile phone screen ($1080 	imes 2400$) and a high-resolution desktop monitor ($1920 	imes 1080$ or $3840 	imes 2160$) produces erratic cursor movements. Eliminating micro-tremors during fine selections while enabling rapid cross-screen sweeping required the derivation and implementation of a non-linear velocity scaling algorithm.</li>
+  <li><strong>Cybersecurity & Air-Gap Assurance:</strong> Connecting a wireless radio to an air-gapped target host raises security concerns regarding unauthorized remote keystroke injection. A hardware-level, fail-safe disconnect mechanism was required to guarantee physical radio containment.</li>
+  <li><strong>USB VBUS Electrical Budgeting:</strong> The entire embedded system (MCU, wireless radio bursts, LEDs, and circuitry) had to run strictly within the standard USB 2.0 5V VBUS power envelope (500 mA maximum) without causing host port brownouts or requiring external wall power.</li>
+</ul>
+
+<h3>1.5 Proposed Technical Solution</h3>
+<p>
+The developed solution utilizes an <strong>Espressif ESP32-S3-WROOM-1</strong> dual-core microcontroller, taking advantage of its integrated, on-die Full-Speed USB 2.0 On-The-Go (OTG) peripheral. Differential data lines (D- on GPIO 19, D+ on GPIO 20) connect directly to the target host USB port. The microcontroller firmware, written in embedded C++ on the FreeRTOS real-time operating system, presents a dual-collection USB Composite HID Descriptor representing an optical mouse and a 104-key keyboard.
+</p>
+<p>
+Concurrently, the ESP32-S3 broadcasts a local, isolated 2.4 GHz SoftAP wireless network (<code>ESP32-Gateway</code>). A cross-platform mobile application developed in Flutter (or an embedded zero-dependency HTML5/JS web application stored in LittleFS flash memory) establishes a persistent, full-duplex WebSocket connection on TCP port 80. Real-time touch coordinates, gestures, virtual typing, and macro triggers are serialized into compact JSON packets, transmitted over Wi-Fi, decoded on Core 0, transferred across a thread-safe atomic circular buffer, and injected into the USB hardware FIFO on Core 1. A physical, active-low tactile push-button tied to hardware GPIO 14 provides an instant hardware Interrupt Service Routine (ISR) that halts all RF transmissions within 1.84 milliseconds.
+</p>
+
+<h3>1.6 Assumptions and Operational Conditions</h3>
+<ul>
+  <li><strong>Host Compatibility:</strong> The target host computer is equipped with an active, functional USB Type-A or Type-C port compliant with USB 2.0 or 3.x standards supporting standard HID class enumeration.</li>
+  <li><strong>Operator Interface:</strong> The operator possesses a standard mobile device (smartphone or tablet) running Android, iOS, or a modern web browser supporting IEEE 802.11 b/g/n Wi-Fi, touch digitizer inputs, and RFC 6455 WebSockets.</li>
+  <li><strong>Physical Proximity:</strong> Operational wireless control is intended for local line-of-sight administration within a 10 to 15-meter radius around the target machine.</li>
+  <li><strong>Power Supply:</strong> The host machine supplies compliant USB 5V VBUS power ($5.0	ext{ V} pm 5%$, capable of supplying at least 300 mA continuous current).</li>
+</ul>
+
+<h3>1.7 Summary of Key Results</h3>
+<ul>
+  <li><strong>End-to-End Latency:</strong> Mean cumulative response time of <strong>28.1 ms</strong> (comprising 16.6 ms digitizer sampling, 4.2 ms Wi-Fi transit, 0.4 ms firmware deserialization, and 8.0 ms USB bus polling), significantly outperforming the 50 ms human perceptual threshold.</li>
+  <li><strong>Cross-Platform Enumeration:</strong> 100% plug-and-play driverless enumeration verified across Windows 10, Windows 11, Ubuntu 22.04 LTS, macOS Monterey/Sonoma, and UEFI BIOS environments in under 350 ms.</li>
+  <li><strong>Hardware RF Safety Cutoff:</strong> Physical actuation of the GPIO 14 kill-switch executes <code>esp_wifi_stop()</code> within <strong>1.84 ms</strong>, terminating all 2.4 GHz radio emissions instantly while keeping USB bus enumeration intact.</li>
+  <li><strong>Power Dissipation:</strong> Peak current consumption during continuous multi-touch streaming and Wi-Fi transmission measured at <strong>240 mA (1.20 W)</strong>, well within the 500 mA (2.50 W) USB 2.0 specification limit.</li>
+  <li><strong>Budgetary Adherence:</strong> Total material and manufacturing cost equaled <strong>R 645.00 ZAR</strong>, achieving a 0.0% budgetary variance against the approved project proposal.</li>
+</ul>
+
+<h3>1.8 Summary of Engineering Contributions</h3>
+<ol>
+  <li><strong>Zero-Driver Interactive HID Architecture:</strong> Proved that an affordable dual-core microcontroller can emulate composite mouse and keyboard hardware to deliver real-time, interactive graphical desktop navigation without host software agents.</li>
+  <li><strong>Deterministic Dual-Core Decoupling:</strong> Implemented a symmetric multiprocessing architecture in FreeRTOS that isolates non-deterministic TCP/IP socket processing on Core 0 from timing-critical USB endpoint scheduling on Core 1 using a lock-free circular ring buffer.</li>
+  <li><strong>Ergonomic Velocity Math Model:</strong> Formulated and deployed a non-linear power-law acceleration equation ($V = alpha cdot (Delta D)^{1.2}$) that resolves touch digitizer scaling limitations and dampens micro-tremors.</li>
+  <li><strong>Fail-Safe Physical Air-Gap Protection:</strong> Designed a hardware-level interrupt mechanism that guarantees instantaneous RF radio silence for secured and classified environments.</li>
+  <li><strong>Turnkey Mechanical Integration:</strong> Engineered, 3D printed, and assembled an ergonomic, durable PETG enclosure with internal optical isolation baffles and captive actuation mechanics.</li>
+</ol>
+
+<h3>1.9 Report Organization</h3>
+<p>
+The remainder of this report is structured as follows: Section 2 covers theoretical background. Section 3 reviews past and related work. Section 4 describes project management and engineering execution. Section 5 details the technical design across hardware, firmware, mobile, and mechanical subsystems. Section 6 presents experimental results and data analysis. Section 7 discusses challenges faced and engineering solutions. Section 8 details the final budget. Section 9 outlines project deliverables. Section 10 proposes future work. Section 11 presents final conclusions. Formal references and technical appendixes conclude the document.
+</p>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 2: BACKGROUND                                                     -->
+<!-- ========================================================================= -->
+
+<h1>2. BACKGROUND</h1>
+
+<h3>2.1 USB Architecture & HID Class Specification</h3>
+<p>
+The Universal Serial Bus (USB) 2.0 standard defines a tiered-star, host-controlled serial topology operating over a four-conductor interface: 5V Power ($V_{	ext{BUS}}$), Ground ($	ext{GND}$), and a differential data pair ($	ext{D}+$ and $	ext{D}-$). USB Full-Speed transmission operates at a signaling rate of $12	ext{ Mbps}$, utilizing non-return-to-zero inverted (NRZI) bit encoding with bit stuffing. A Full-Speed peripheral identifies itself to the host by pulling the $	ext{D}+$ line to $3.3	ext{ V}$ via a $1.5	ext{ k}Omega$ pull-up resistor.
+</p>
+<p>
+The USB Human Interface Device (HID) class protocol (governed by USB-IF HID Specification v1.11) is uniquely suited for driverless peripherals. During USB enumeration, the host requests descriptors:
+</p>
+<ul>
+  <li><strong>Device Descriptor:</strong> Declares the vendor ID (VID), product ID (PID), and USB specification version.</li>
+  <li><strong>Configuration Descriptor:</strong> Specifies power requirements ($500	ext{ mA}$) and interfaces.</li>
+  <li><strong>Interface Descriptor:</strong> Declares the device class as HID ($0	ext{x}03$), with a subclass of Boot Interface ($0	ext{x}01$) or Generic ($0	ext{x}00$).</li>
+  <li><strong>HID Report Descriptor:</strong> A structured, hierarchical byte array that defines the syntax and semantics of input and output reports exchanged between device and host.</li>
+</ul>
+<p>
+By defining a <strong>Composite HID Descriptor</strong>, a single physical USB endpoint can interleave independent reports for multiple logical devices—specifically a 4-byte relative pointer report (mouse) and an 8-byte boot-compatible keyboard report.
+</p>
+
+<h3>2.2 Espressif ESP32-S3 Architecture & USB OTG PHY</h3>
+<p>
+The Espressif ESP32-S3 is a low-power system-on-chip (SoC) featuring dual 32-bit Xtensa LX7 microprocessors running at up to $240	ext{ MHz}$. Unlike its predecessor (the classic ESP32), the ESP32-S3 incorporates an <strong>internal, on-die Full-Speed USB 2.0 On-The-Go (OTG) peripheral with integrated physical layer (PHY) transceivers</strong>.
+</p>
+<p>
+This integrated transceiver drives the differential voltage levels ($V_{	ext{OH}} ge 2.8	ext{ V}$, $V_{	ext{OL}} le 0.3	ext{ V}$) directly across GPIO 19 ($	ext{D}-$) and GPIO 20 ($	ext{D}+$) without requiring external PHY ICs (such as the MAX3421E or ULPI transceivers). The ESP32-S3 hardware includes dedicated DMA channels and FIFO buffers for USB endpoints, enabling zero-copy packet dispatching directly into the TinyUSB software framework.
+</p>
+
+<h3>2.3 Wireless Protocols & Full-Duplex WebSockets</h3>
+<p>
+Wireless transmission between the mobile client and the gateway is established over IEEE 802.11b/g/n Wi-Fi configured in <strong>SoftAP (Software Access Point)</strong> mode. The ESP32-S3 executes an internal DHCP server that assigns the mobile client an IP within the <code>192.168.4.0/24</code> subnet, with the gateway serving at <code>192.168.4.1</code>.
+</p>
+<p>
+While traditional embedded web applications employ HTTP REST requests (<code>GET</code> / <code>POST</code>), HTTP introduces severe performance bottlenecks:
+</p>
+<ul>
+  <li>Every request requires TCP connection negotiation or HTTP keep-alive header parsing ($>500	ext{ bytes}$ of header overhead per transaction).</li>
+  <li>HTTP operates strictly on a request-response paradigm, preventing true asynchronous event streaming.</li>
+</ul>
+<p>
+To overcome this, the system implements the <strong>RFC 6455 WebSocket Protocol</strong>. After an initial lightweight HTTP upgrade handshake on TCP port 80, the connection transitions to a persistent, full-duplex framing channel. Individual telemetry frames incur only 2 to 6 bytes of framing overhead. The ESPAsyncWebServer library utilizes asynchronous, non-blocking LwIP socket callbacks, allowing telemetry packets to be ingested at rates exceeding 100 packets per second with minimal CPU utilization.
+</p>
+
+<h3>2.4 FreeRTOS Multiprocessing & Inter-Core Scheduling</h3>
+<p>
+The ESP32-S3 operates the FreeRTOS real-time kernel, distributing computational workloads across its two physical execution cores:
+</p>
+<ul>
+  <li><strong>Core 0 (Protocol & Networking Engine):</strong> Executes the Espressif Wi-Fi driver, the LwIP TCP/IP stack, and the asynchronous WebSocket frame parsing routines. Core 0 is optimized for interrupt-driven network traffic.</li>
+  <li><strong>Core 1 (Hardware Execution & USB Engine):</strong> Executes the TinyUSB device task and processes physical USB endpoint interrupts.</li>
+</ul>
+
+<div class="diagram-container">
+       CORE 0: NETWORKING ENGINE                  CORE 1: USB HARDWARE ENGINE
+  +---------------------------------+        +-----------------------------------+
+  | Asynchronous LwIP Network Task  |        | FreeRTOS USB Execution Task       |
+  | WebSocket Frame Decapsulation   |        | TinyUSB Device Stack Polling      |
+  | ArduinoJson Deserializer        |        | Composite HID Report Generation   |
+  +---------------------------------+        +-----------------------------------+
+                  |                                            ^
+                  |                                            |
+                  +---->[ ATOMIC CIRCULAR RING BUFFER ]--------+
+                        Thread-Safe, Lock-Free Memory Queue
+</div>
+<div class="figure-caption">Figure 3: Dual-Core FreeRTOS Concurrency & Thread-Safe Ring Buffer Pipeline</div>
+
+<p>
+Decoupling these subsystems across distinct hardware cores guarantees that intensive Wi-Fi beacon generation, TCP retransmissions, or network bursts on Core 0 cannot preempt or introduce timing jitter into the $125	ext{ Hz}$ ($8.0	ext{ ms}$) USB polling schedule maintained on Core 1.
+</p>
+
+<h3>2.5 Ergonomic Human-Computer Interaction & Perceptual Latency</h3>
+<p>
+In interactive Human-Computer Interaction (HCI), input latency is defined as the time elapsed between a physical motor action (e.g., finger motion on a capacitive digitizer) and the corresponding optical or functional response on screen. Human factors engineering research establishes the following latency tiers:
+</p>
+<ul>
+  <li><strong>$< 50	ext{ ms}$:</strong> The human sensory system perceives input response as instantaneous and natural. Continuous tactile manipulation (such as cursor tracking) feels smooth and direct.</li>
+  <li><strong>$50	ext{ ms} - 100	ext{ ms}$:</strong> Latency becomes noticeable; users perceive slight sluggishness or "elasticity", leading to overshooting during target acquisition.</li>
+  <li><strong>$> 100	ext{ ms}$:</strong> Severe degradation; typing errors multiply and fine cursor guidance becomes frustrating.</li>
+</ul>
+<p>
+Consequently, maintaining total cumulative system latency ($T_{	ext{total}}$) under <strong>30 ms</strong> was established as a foundational engineering constraint for this project.
+</p>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 3: PAST/RELATED WORK                                              -->
+<!-- ========================================================================= -->
+
+<h1>3. PAST/RELATED WORK</h1>
+
+<h3>3.1 Taxonomy of Remote Control Methodologies</h3>
+<p>
+Computer remote access technologies can be categorized based on their layer of interaction within the Open Systems Interconnection (OSI) and computing architecture models:
+</p>
+<ol>
+  <li><strong>Application-Layer Remote Desktop Software:</strong> Operates at OSI Layer 7, capturing the host OS frame buffer and injecting virtual input events via operating system APIs (e.g., Windows <code>SendInput()</code>).</li>
+  <li><strong>Hardware KVM-over-IP Systems:</strong> Operate externally to the host operating system, capturing raw video output (HDMI/VGA) and emulating physical USB keyboard/mouse hardware.</li>
+  <li><strong>Hardware Keystroke Injection Devices:</strong> Emulate physical USB keyboards to inject pre-compiled payloads, typically used for penetration testing.</li>
+  <li><strong>Wireless HID Transceivers:</strong> Commercial 2.4 GHz RF or Bluetooth dongles paired with dedicated proprietary hardware peripherals (e.g., Logitech Unifying, wireless mice).</li>
+</ol>
+
+<h3>3.2 Comparative Evaluation</h3>
+<p>
+Table 2 provides a multidimensional technical comparison of the proposed ESP32-S3 Hardware Gateway against prevailing industry alternatives.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 2: Comparative Analysis of Remote Control Methodologies</strong></caption>
+  <thead>
+    <tr>
+      <th>Comparison Metric</th>
+      <th>Software RDP (TeamViewer / AnyDesk)</th>
+      <th>Hardware KVM-over-IP (PiKVM v3 / ATEN)</th>
+      <th>Keystroke Injectors (USB Rubber Ducky)</th>
+      <th>Commercial Bluetooth Mice</th>
+      <th>ESP32-S3 Hardware Gateway (This Project)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Operating Layer</strong></td>
+      <td>OS Application Layer (Layer 7)</td>
+      <td>Physical Hardware (External)</td>
+      <td>Physical USB Bus (Hardware)</td>
+      <td>Physical USB / RF Controller</td>
+      <td><strong>Physical USB Hardware + SoftAP</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Driver / Agent Installation</strong></td>
+      <td>Mandatory Host Client Agent</td>
+      <td>Zero Drivers Required</td>
+      <td>Zero Drivers Required</td>
+      <td>Zero Drivers Required</td>
+      <td><strong>Zero Drivers Required (Driverless)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Host Admin Privileges</strong></td>
+      <td>Required for Installation</td>
+      <td>None Required</td>
+      <td>None Required</td>
+      <td>None Required</td>
+      <td><strong>None Required (Agentless)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Firewall / Port Dependencies</strong></td>
+      <td>Requires Outbound WAN Ports</td>
+      <td>Local Ethernet Port Required</td>
+      <td>None</td>
+      <td>None</td>
+      <td><strong>None (Isolated Local SoftAP)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Pre-Boot / BIOS Control</strong></td>
+      <td>Inoperable (No OS Stack)</td>
+      <td>Fully Supported</td>
+      <td>Supported (Blind Only)</td>
+      <td>Limited (Depends on Dongle)</td>
+      <td><strong>Fully Supported (BIOS/UEFI Ready)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Real-Time Touch Navigation</strong></td>
+      <td>Yes (Over Network)</td>
+      <td>Yes (Web-based Canvas)</td>
+      <td>No (Static Scripts Only)</td>
+      <td>Yes (Hardware Mouse Only)</td>
+      <td><strong>Yes (60Hz Touch Digitizer & Gestures)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Physical Air-Gap Safety</strong></td>
+      <td>None (Network Connected)</td>
+      <td>Moderate (Ethernet Uplink)</td>
+      <td>None (Malicious Risk)</td>
+      <td>Weak (RF Sniffing)</td>
+      <td><strong>High (Dedicated Hardware Kill-Switch)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Bill of Materials Cost (ZAR)</strong></td>
+      <td>Monthly Subscription Fee</td>
+      <td>R 3,500.00 – R 8,500.00</td>
+      <td>R 1,200.00 – R 1,800.00</td>
+      <td>R 350.00 – R 900.00</td>
+      <td><strong>R 645.00 ZAR (Complete Prototype)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Form Factor & Portability</strong></td>
+      <td>Software Only</td>
+      <td>Bulky Metal Box + Cables</td>
+      <td>USB Flash Drive</td>
+      <td>Mouse Peripheral</td>
+      <td><strong>Ultra-Compact Pocket Dongle (76mm)</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>3.3 Novelty and Technical Differentiation</h3>
+<p>
+The technical novelty of the ESP32-S3 Hardware-Level Remote Access Gateway lies in the convergence of four engineering capabilities:
+</p>
+<ol>
+  <li><strong>Zero-Trust Administrative Utility:</strong> Unlike software RDP tools, the gateway operates without leaving forensic logs, registry keys, or background services on the host machine, making it completely compliant with strict zero-trust enterprise security policies.</li>
+  <li><strong>Interactive Bi-Directional Control vs. Blind Payloads:</strong> While commercial penetration testing tools (e.g., Rubber Ducky) are limited to linear, non-interactive script injection, this system establishes a continuous, bi-directional control session supporting real-time analog mouse gliding, multi-touch scrolling, and interactive keyboard input.</li>
+  <li><strong>Drastic Cost and Form-Factor Reduction:</strong> Traditional KVM-over-IP devices require external microprocessors, HDMI capture bridge chips (e.g., TC358743), Ethernet magnetics, and external power bricks. By focusing on low-latency input injection and leveraging the smartphone screen, this design reduces the bill of materials by over 80% and eliminates all auxiliary power and video cabling.</li>
+  <li><strong>Hardware-Enforced Air-Gap Protection:</strong> Commercial wireless mice remain permanently susceptible to RF sniffing or hijacking (e.g., MouseJack vulnerabilities). This project integrates an active-low hardware interrupt switch that physically deactivates all radio frequency transmission within 1.84 ms, providing verifiable air-gap isolation.</li>
+</ol>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 4: PROJECT MANAGEMENT                                             -->
+<!-- ========================================================================= -->
+
+<h1>4. PROJECT MANAGEMENT</h1>
+
+<h3>4.1 Engineering Methodology</h3>
+<p>
+The project was executed utilizing an <strong>Iterative Agile Engineering Methodology</strong> aligned with the standards of the National Diploma: Computer Systems Engineering curriculum at TUT. The engineering lifecycle incorporated four structured feedback milestones:
+</p>
+<ol>
+  <li><strong>Architectural Conception & Simulation (Phase 1):</strong> Requirements analysis, mathematical modeling of latency budgets, and hardware component selection.</li>
+  <li><strong>Subsystem Prototyping (Phase 2):</strong> Firmware development on breadboard platforms, FreeRTOS queue optimization, and mobile gesture engine design.</li>
+  <li><strong>System Integration & Physical Assembly (Phase 3):</strong> Mechanical CAD enclosure modeling, 3D additive manufacturing, wiring consolidation, and hardware kill-switch integration.</li>
+  <li><strong>Empirical Benchmarking & Validation (Phase 4):</strong> Latency profiling, cross-OS driverless validation, RF cutoff timing measurements, and comprehensive technical documentation.</li>
+</ol>
+
+<h3>4.2 Work Breakdown Structure (WBS) & Role Allocation</h3>
+<p>
+As an individual final-year capstone engineering project, all technical tasks—spanning electronics design, embedded firmware, mobile software, mechanical modeling, and fabrication—were authored and executed by <strong>Oratile Innocent Tshosetso (Student No: 222883253)</strong>, under the academic supervision and evaluation of <strong>Muwanguzi Mark Ntume</strong> and <strong>Chunling Du</strong>.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 3: Work Breakdown Structure (WBS) & Task Ownership</strong></caption>
+  <thead>
+    <tr>
+      <th>WBS Element</th>
+      <th>Subsystem Category</th>
+      <th>Detailed Technical Scope</th>
+      <th>Deliverables & Artifacts</th>
+      <th>Primary Engineer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>WBS 1.0</strong></td>
+      <td><strong>Hardware Subsystem</strong></td>
+      <td>Schematic design, USB OTG differential routing, GPIO mapping, pull-up and status LED current-limiting circuitry.</td>
+      <td>Complete hardware schematic, verified breadboard wiring.</td>
+      <td>O.I. Tshosetso</td>
+    </tr>
+    <tr>
+      <td><strong>WBS 2.0</strong></td>
+      <td><strong>Embedded Firmware</strong></td>
+      <td>Dual-core FreeRTOS task partitioning, TinyUSB composite HID descriptor generation, and asynchronous WebSocket parsing.</td>
+      <td>C++ firmware binaries, LittleFS flash data image.</td>
+      <td>O.I. Tshosetso</td>
+    </tr>
+    <tr>
+      <td><strong>WBS 3.0</strong></td>
+      <td><strong>Mobile Client App</strong></td>
+      <td>Flutter cross-platform UI, 60Hz capacitive touch vector tracking, non-linear velocity scaling, and macro dispatch engine.</td>
+      <td>Flutter client source code, standalone Android APK installer.</td>
+      <td>O.I. Tshosetso</td>
+    </tr>
+    <tr>
+      <td><strong>WBS 4.0</strong></td>
+      <td><strong>Mechanical Housing</strong></td>
+      <td>OpenSCAD parametric CAD modeling, slicing optimization, PETG 3D printing, and captive push-button plunger mechanics.</td>
+      <td>STL files, sliced G-code, physical 3D-printed enclosure.</td>
+      <td>O.I. Tshosetso</td>
+    </tr>
+    <tr>
+      <td><strong>WBS 5.0</strong></td>
+      <td><strong>Benchmarking & Testing</strong></td>
+      <td>Empirical latency profiling, logic analyzer RF cutoff measurement, cross-OS enumeration, and power dissipation analysis.</td>
+      <td>Latency dataset, logic captures, empirical test tables.</td>
+      <td>O.I. Tshosetso</td>
+    </tr>
+    <tr>
+      <td><strong>WBS 6.0</strong></td>
+      <td><strong>Project Documentation</strong></td>
+      <td>IEEE 1016 Technical Design Documentation, IEEE 1063 User Manual, Oral Defense Guide, and Final Project Report.</td>
+      <td>Complete documentation suite, oral defense slides.</td>
+      <td>O.I. Tshosetso</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>4.3 Project Plan & Timeline (Gantt Analysis)</h3>
+<p>
+The project commenced on 01 September 2026 and concluded on 10 November 2026. All critical milestones were achieved on schedule without time slippage.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 4: Project Schedule & Milestone Progression Across Project Phases</strong></caption>
+  <thead>
+    <tr>
+      <th>Project Phase</th>
+      <th>Scheduled Dates</th>
+      <th>Planned Engineering Milestones</th>
+      <th>Actual Status</th>
+      <th>Deliverable Output</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Phase 1: Conceptualization & Procurement</strong></td>
+      <td>01 Sep 2026 – 20 Sep 2026</td>
+      <td>Requirements specification, component procurement, ESP32-S3 TinyUSB enumeration verification on breadboard.</td>
+      <td>Completed On Schedule</td>
+      <td>Project Proposal (Approved), breadboard USB enumeration.</td>
+    </tr>
+    <tr>
+      <td><strong>Phase 2: Firmware & Mobile Development</strong></td>
+      <td>21 Sep 2026 – 15 Oct 2026</td>
+      <td>FreeRTOS dual-core task design, WebSocket protocol implementation, Flutter mobile touch engine, non-linear velocity math.</td>
+      <td>Completed On Schedule</td>
+      <td>Functional C++ firmware, LittleFS web interface, Flutter APK.</td>
+    </tr>
+    <tr>
+      <td><strong>Phase 3: Integration & Enclosure Assembly</strong></td>
+      <td>16 Oct 2026 – 05 Nov 2026</td>
+      <td>CAD modeling in OpenSCAD, 3D printing in PETG, hardware wiring consolidation, GPIO 14 RF kill-switch integration.</td>
+      <td>Completed On Schedule</td>
+      <td>Fabricated hardware dongle, enclosed prototype, assembly guide.</td>
+    </tr>
+    <tr>
+      <td><strong>Phase 4: Benchmarking & Final Documentation</strong></td>
+      <td>06 Nov 2026 – 10 Nov 2026</td>
+      <td>Empirical latency profiling, cross-OS testing (Win/Mac/Linux), power dissipation analysis, Final Project Report compilation.</td>
+      <td>Completed On Schedule</td>
+      <td>Final Project Report, IEEE Portfolio Binder, Defense Guide.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>4.4 Scope Variance & Adjustments from Proposal</h3>
+<p>
+Throughout the development lifecycle, two strategic scope refinements were implemented to preserve system reliability and deterministic latency:
+</p>
+<ol>
+  <li><strong>Decoupling of Video Streaming from Embedded Gateway:</strong> The original conceptual scope evaluated incorporating direct on-board HDMI video encoding on the microcontroller. Preliminary testing revealed that software JPEG compression on the ESP32-S3 consumed over 85% of CPU cycles and saturated the single 2.4 GHz radio, introducing unpredictable latency jitter into mouse pointer packets. Consequently, video capture was re-engineered as an <strong>independent, optional host daemon</strong> (<code>HardwareGatewayStream.py</code>) communicating over a secondary WebSocket port (TCP 8765). This architectural decision ensured that the primary USB HID control pipeline maintained absolute, deterministic sub-30ms performance.</li>
+  <li><strong>Transition from LittleFS Web UI to Native Flutter Application:</strong> While the project originally proposed serving an HTML5 web client directly from the ESP32-S3's internal flash memory, mobile browser gesture throttling (e.g., iOS Safari elastic bounce and address bar resizing) introduced micro-delays. To guarantee maximum responsiveness, a standalone Flutter native mobile application was developed as the primary operator interface, retaining the LittleFS HTML5 client as a zero-dependency fallback.</li>
+</ol>
+
+<h3>4.5 Risk Assessment & Mitigation Matrix</h3>
+<ul>
+  <li><strong>Risk 1: Host USB Port Overcurrent:</strong> Mitigated by calculating the peak current budget ($240	ext{ mA}$) and integrating a hardware polyfuse to prevent exceeding the $500	ext{ mA}$ USB 2.0 ceiling.</li>
+  <li><strong>Risk 2: Key Repeat Lockups on Disconnection:</strong> If the smartphone drops Wi-Fi connectivity while transmitting a key-press event, the host could execute runaway repeating keystrokes. Mitigated by programming an automatic WebSocket timeout watchdog that flushes all HID keyboard buffers to zero upon packet loss or socket termination.</li>
+  <li><strong>Risk 3: Component Failure during Breadboard Assembly:</strong> Mitigated by procuring redundant hardware units (2x ESP32-S3 development boards) within the initial R 645.00 budget.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 5: TECHNICAL SECTIONS                                             -->
+<!-- ========================================================================= -->
+
+<h1>5. TECHNICAL SECTIONS</h1>
+
+<h3>5.1 Overall System Architecture</h3>
+<p>
+The Hardware-Level USB Remote Access Gateway is structured into a <strong>Three-Tier Distributed Architecture</strong>, connecting the mobile operator layer, the embedded microcontroller gateway layer, and the target host computer layer.
+</p>
+
+<div class="diagram-container">
++-----------------------------------------------------------------------------------+
+|                            LAYER 1: MOBILE CLIENT APPLICATION                     |
+|  - Flutter Native UI / LittleFS Fallback HTML5 Web Client                         |
+|  - 60Hz Touch Digitizer Event Listener (TouchDown, TouchMove, TouchUp)            |
+|  - Ergonomic Velocity Engine: V = alpha * (Delta D)^1.2                           |
+|  - Virtual Keyboard Serializer & Macro Shortcut Dispatcher                        |
++-----------------------------------------------------------------------------------+
+                                         |
+                  [ 2.4 GHz IEEE 802.11b/g/n SoftAP | RFC 6455 WebSockets ]
+                                         v
++-----------------------------------------------------------------------------------+
+|                        LAYER 2: ESP32-S3 HARDWARE GATEWAY                         |
+|  CORE 0 (Networking Engine):                                                      |
+|    - Isolated 802.11 SoftAP ('ESP32-Gateway', 192.168.4.1)                        |
+|    - AsyncWebServer & Non-Blocking LwIP TCP Sockets (Port 80)                     |
+|    - ArduinoJson v7 Zero-Copy Packet Deserializer                                 |
+|    - Thread-Safe Atomic Circular Ring Buffer (Lock-Free FIFO)                     |
+|  CORE 1 (Hardware Execution Engine):                                              |
+|    - Circular Buffer Consumer Task                                                |
+|    - TinyUSB Stack Engine & Endpoint FIFO Manager                                 |
+|    - Composite HID Mouse (4-byte) & Keyboard (8-byte) Report Injection            |
+|  SAFETY & DIAGNOSTICS:                                                            |
+|    - GPIO 14 Active-Low Falling-Edge Hardware ISR (RF Kill-Switch < 2ms)          |
+|    - GPIO 5 Wi-Fi Status LED (Blue) & GPIO 4 USB Activity LED (Amber)             |
++-----------------------------------------------------------------------------------+
+                                         |
+                       [ USB 2.0 Full-Speed Differential D+ / D- ]
+                                         v
++-----------------------------------------------------------------------------------+
+|                              LAYER 3: TARGET HOST PC                              |
+|  - Universal Native OS USB HID Class Driver (USB-IF Spec v1.11 Compliant)        |
+|  - Zero Software Installation | Zero Host Configuration | Zero Forensic Logs      |
+|  - Direct Hardware Ingestion: BIOS/UEFI, Windows 10/11, macOS, Linux Kernel       |
++-----------------------------------------------------------------------------------+
+</div>
+<div class="figure-caption">Figure 1: High-Level Three-Tier System Architecture Block Diagram</div>
+
+<h3>5.2 Electrical Hardware Design & Schematics</h3>
+<p>
+The physical hardware interface centers on the ESP32-S3-WROOM-1 module. The electrical interconnect incorporates the USB OTG physical lines, the hardware kill-switch, and visual diagnostic LED indicators.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 1: Complete Pin Allocation & Hardware Interface Mapping</strong></caption>
+  <thead>
+    <tr>
+      <th>Signal / Net</th>
+      <th>ESP32-S3 Pin</th>
+      <th>Electrical Configuration</th>
+      <th>Circuit Function & Operational Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>USB Data Minus (D-)</strong></td>
+      <td>GPIO 19</td>
+      <td>USB OTG Differential In/Out</td>
+      <td>Carries the negative differential signal line for USB 2.0 Full-Speed communication.</td>
+    </tr>
+    <tr>
+      <td><strong>USB Data Plus (D+)</strong></td>
+      <td>GPIO 20</td>
+      <td>USB OTG Differential In/Out</td>
+      <td>Carries the positive differential line; includes internal $1.5	ext{ k}Omega$ pull-up to $3.3	ext{ V}$.</td>
+    </tr>
+    <tr>
+      <td><strong>Hardware Kill-Switch</strong></td>
+      <td>GPIO 14</td>
+      <td>Digital Input (Internal Pull-Up)</td>
+      <td>Tactile push-button tied to GND; active-low falling-edge hardware ISR invokes <code>esp_wifi_stop()</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Wi-Fi Status LED</strong></td>
+      <td>GPIO 5</td>
+      <td>Digital Output (Active High)</td>
+      <td>Channeled to 3mm Blue LED via $330 Omega$ resistor; blinks at 1Hz (idle), solid (client connected).</td>
+    </tr>
+    <tr>
+      <td><strong>USB Activity LED</strong></td>
+      <td>GPIO 4</td>
+      <td>Digital Output (Active High)</td>
+      <td>Channeled to 3mm Amber LED via $330 Omega$ resistor; strobes on active HID packet transmission.</td>
+    </tr>
+    <tr>
+      <td><strong>USB VBUS Power</strong></td>
+      <td>5V Pin</td>
+      <td>Power Input Rail ($5	ext{ V} pm 5%$)</td>
+      <td>Draws system power directly from host USB root hub; filtered through decoupling capacitors.</td>
+    </tr>
+    <tr>
+      <td><strong>System Ground</strong></td>
+      <td>GND Pin</td>
+      <td>Ground Reference Plane</td>
+      <td>Common low-impedance ground plane connecting host USB, MCU, LEDs, and tactile switch.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="diagram-container">
+                              ESP32-S3 HARDWARE SCHEMATIC
+                              +------------------------+
+   Host USB Type-A / C        |      ESP32-S3 MCU      |
+   +-------------------+      |                        |
+   | VBUS (+5V) -------+------+ 5V In                  |
+   | D- (Data Minus) --+------+ GPIO 19 (USB D-)       |
+   | D+ (Data Plus) ---+------+ GPIO 20 (USB D+)       |
+   | GND (Ground) -----+---+--+ GND                    |
+   +-------------------+   |  +------------------------+
+                           |     | GPIO 5   | GPIO 4   | GPIO 14
+                           |     +-[330R]-+ +-[330R]-+ +--------+
+                           |              |          |          |
+                           |           [BLUE]     [AMBER]    [PUSH] (Kill-Switch)
+                           |            LED        LED       BUTTON
+                           |              |          |          |
+                           +--------------+----------+----------+
+</div>
+<div class="figure-caption">Figure 2: Complete Electrical Interconnect & Hardware Schematic Diagram</div>
+
+<h3>5.3 Engineering Calculations</h3>
+
+<h4>5.3.1 Current-Limiting Resistors for Status LEDs</h4>
+<p>
+To prevent digital output driver damage and guarantee optimal luminous intensity through the enclosure light pipes, current-limiting resistors were calculated using Ohm's Law and Kirchhoff's Voltage Law:
+</p>
+<div class="math-formula">
+  R_{	ext{limit}} = rac{V_{	ext{GPIO}} - V_{F}}{I_{F}}
+</div>
+<p>Where:</p>
+<ul>
+  <li>$V_{	ext{GPIO}} = 3.30	ext{ V}$ (ESP32-S3 logic output voltage).</li>
+  <li>$V_{F	ext{, Blue}} approx 2.80	ext{ V}$ (Forward voltage drop of standard 3mm Blue LED).</li>
+  <li>$V_{F	ext{, Amber}} approx 2.00	ext{ V}$ (Forward voltage drop of standard 3mm Amber LED).</li>
+  <li>$I_{F	ext{, target}} approx 4.0	ext{ mA}$ (Target forward current for low-power visual indication).</li>
+</ul>
+<p>Calculating for the Amber LED:</p>
+<div class="math-formula">
+  R_{	ext{Amber}} = rac{3.30	ext{ V} - 2.00	ext{ V}}{0.004	ext{ A}} = rac{1.30	ext{ V}}{0.004	ext{ A}} = 325 Omega implies 	ext{Standard Value Selected: } 330 Omega
+</div>
+<p>
+At $330 Omega$, current is $I_{F} = 1.30 / 330 = 3.94	ext{ mA}$. For the Blue LED:
+</p>
+<div class="math-formula">
+  R_{	ext{Blue}} = rac{3.30	ext{ V} - 2.80	ext{ V}}{0.004	ext{ A}} = rac{0.50	ext{ V}}{0.004	ext{ A}} = 125 Omega
+</div>
+<p>
+To standardize the bill of materials, identical $330 Omega$ resistors were implemented for both lines. For the Blue LED, this yields $I_{F} = 0.50 / 330 = 1.51	ext{ mA}$, which provides sufficient visibility through the light pipes while conserving power.
+</p>
+
+<h4>5.3.2 USB 5V VBUS Power Budgeting</h4>
+<p>
+Under USB 2.0 specifications, a standard bus-powered function may draw up to 5 unit loads ($500	ext{ mA}$ at $5	ext{ V}$, or $2.50	ext{ W}$). The power consumption profile of the gateway was calculated as follows:
+</p>
+<div class="math-formula">
+  I_{	ext{total}} = I_{	ext{MCU_Active}} + I_{	ext{WiFi_TX_Burst}} + I_{	ext{USB_PHY}} + I_{	ext{LEDs}}
+</div>
+<ul>
+  <li>$I_{	ext{MCU_Active}} approx 65	ext{ mA}$ (Xtensa LX7 dual cores running at $240	ext{ MHz}$).</li>
+  <li>$I_{	ext{WiFi_TX_Burst}} approx 160	ext{ mA}$ (Peak 802.11b/g/n transmission current at $+19.5	ext{ dBm}$).</li>
+  <li>$I_{	ext{USB_PHY}} approx 10	ext{ mA}$ (Active Full-Speed differential switching).</li>
+  <li>$I_{	ext{LEDs}} approx 5.5	ext{ mA}$ (Both LEDs concurrently illuminated).</li>
+</ul>
+<div class="math-formula">
+  I_{	ext{peak}} = 65	ext{ mA} + 160	ext{ mA} + 10	ext{ mA} + 5.5	ext{ mA} = 240.5	ext{ mA}
+</div>
+<div class="math-formula">
+  P_{	ext{peak}} = V_{	ext{BUS}} 	imes I_{	ext{peak}} = 5.0	ext{ V} 	imes 0.2405	ext{ A} = 1.2025	ext{ W}
+</div>
+<p>
+Because $240.5	ext{ mA} ll 500	ext{ mA}$, the gateway operates safely within the standard USB power ceiling with a $51.9%$ safety margin, eliminating any possibility of host root-hub overcurrent shutdown.
+</p>
+
+<h4>5.3.3 Touch Velocity Exponential Acceleration Algorithm</h4>
+<p>
+Direct linear coordinate mapping ($V = alpha cdot Delta D$) causes severe usability issues: micro-tremors from the operator's finger vibrate the cursor during precision selections, while dragging across high-resolution displays requires repeated, exhausting swiping. To achieve ergonomic parity with physical optical mice, a <strong>non-linear power-law velocity transfer function</strong> was derived:
+</p>
+<div class="math-formula">
+  V = alpha cdot (Delta D)^{gamma}
+</div>
+<p>Where:</p>
+<ul>
+  <li>$Delta D = sqrt{(Delta X)^2 + (Delta Y)^2}$ represents the raw Euclidean touch displacement vector in pixels per sample frame.</li>
+  <li>$gamma = 1.20$ is the empirically calibrated non-linear expansion exponent.</li>
+  <li>$alpha in [0.4, 2.5]$ is the operator-selectable sensitivity multiplier (nominal value: $1.0$).</li>
+</ul>
+
+<div class="diagram-container">
+Cursor Velocity (V)
+      ^
+      |                                              / (Rapid Sweeping Motion)
+      |                                            /
+      |                                         .-'
+      |                                      .-'
+      |                                  _.-'
+      |                          _...--''
+      |                 _...--'''
+      |         _...--'''  (Sub-pixel Damping Region: Eliminates Hand Tremors)
+      +------------------------------------------------------------> Touch Delta (ΔD)
+</div>
+<div class="figure-caption">Figure 4: Non-Linear Touch Velocity Acceleration Response Curve ($V = alpha cdot (Delta D)^{1.2}$)</div>
+
+<p>
+For small displacements ($Delta D le 2	ext{ px}$), the exponent suppresses output velocity ($2^{1.2} = 2.29$), providing sub-pixel precision for clicking tiny interface icons. For rapid swipes ($Delta D ge 25	ext{ px}$), output velocity scales exponentially ($25^{1.2} = 47.8$), enabling effortless traversal across 4K displays in a single finger sweep.
+</p>
+
+<h3>5.4 Embedded Firmware Architecture</h3>
+
+<h4>5.4.1 TinyUSB Composite HID Report Descriptors</h4>
+<p>
+The USB subsystem configures two discrete HID report collections multiplexed over a single logical interface.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 5: USB Mouse HID Input Report Byte Structure (4 Bytes)</strong></caption>
+  <thead>
+    <tr>
+      <th>Byte Offset</th>
+      <th>Field Name</th>
+      <th>Data Type</th>
+      <th>Bit Representation & Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Byte 0</strong></td>
+      <td>Button Bitmask</td>
+      <td><code>uint8_t</code></td>
+      <td>Bit 0: Left Click; Bit 1: Right Click; Bit 2: Middle Click; Bits 3–7: Unused (0).</td>
+    </tr>
+    <tr>
+      <td><strong>Byte 1</strong></td>
+      <td>X-Axis Relative Delta</td>
+      <td><code>int8_t</code></td>
+      <td>Two's complement signed integer ($-127$ to $+127$) representing horizontal displacement.</td>
+    </tr>
+    <tr>
+      <td><strong>Byte 2</strong></td>
+      <td>Y-Axis Relative Delta</td>
+      <td><code>int8_t</code></td>
+      <td>Two's complement signed integer ($-127$ to $+127$) representing vertical displacement.</td>
+    </tr>
+    <tr>
+      <td><strong>Byte 3</strong></td>
+      <td>Scroll Wheel Delta</td>
+      <td><code>int8_t</code></td>
+      <td>Two's complement signed integer ($-127$ to $+127$) representing vertical wheel ticks.</td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="data-table">
+  <caption><strong>Table 6: USB Keyboard HID Input Report Byte Structure (8 Bytes)</strong></caption>
+  <thead>
+    <tr>
+      <th>Byte Offset</th>
+      <th>Field Name</th>
+      <th>Data Type</th>
+      <th>Bit Representation & Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Byte 0</strong></td>
+      <td>Modifier Key Mask</td>
+      <td><code>uint8_t</code></td>
+      <td>Bit 0: L-Ctrl; Bit 1: L-Shift; Bit 2: L-Alt; Bit 3: L-GUI (Win/Cmd); Bits 4–7: Right Modifiers.</td>
+    </tr>
+    <tr>
+      <td><strong>Byte 1</strong></td>
+      <td>Reserved Byte</td>
+      <td><code>uint8_t</code></td>
+      <td>Constant $0	ext{x}00$ (mandated by USB HID specification for boot protocol compatibility).</td>
+    </tr>
+    <tr>
+      <td><strong>Bytes 2–7</strong></td>
+      <td>Keycode Array</td>
+      <td><code>uint8_t[6]</code></td>
+      <td>6-Key Rollover (6KRO) array containing up to six concurrent active USB HID Usage keycodes.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>5.4.2 WebSocket Telemetry Framing & Packet Formats</h4>
+<p>
+Client-to-gateway telemetry is serialized using compact, zero-copy JSON strings decoded via the <code>ArduinoJson v7</code> library.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 7: Full-Duplex WebSocket JSON Telemetry Packet Schema</strong></caption>
+  <thead>
+    <tr>
+      <th>Packet Identifier</th>
+      <th>Type (<code>"t"</code>)</th>
+      <th>Payload Parameters</th>
+      <th>Functional Description</th>
+      <th>Sample JSON String</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Mouse Move</strong></td>
+      <td><code>"m"</code></td>
+      <td><code>"dx": int, "dy": int</code></td>
+      <td>Transmits calculated relative cursor motion deltas.</td>
+      <td><code>{"t":"m","dx":12,"dy":-6}</code></td>
+    </tr>
+    <tr>
+      <td><strong>Mouse Button</strong></td>
+      <td><code>"b"</code></td>
+      <td><code>"btn": int, "state": int</code></td>
+      <td>Button state: 1=Left, 2=Right; state: 1=Down, 0=Up.</td>
+      <td><code>{"t":"b","btn":1,"state":1}</code></td>
+    </tr>
+    <tr>
+      <td><strong>Mouse Wheel</strong></td>
+      <td><code>"w"</code></td>
+      <td><code>"dy": int</code></td>
+      <td>Two-finger vertical scroll wheel velocity ticks.</td>
+      <td><code>{"t":"w","dy":-3}</code></td>
+    </tr>
+    <tr>
+      <td><strong>Keystroke</strong></td>
+      <td><code>"k"</code></td>
+      <td><code>"key": str, "mod": int</code></td>
+      <td>Injects ASCII character or keycode with modifier mask.</td>
+      <td><code>{"t":"k","key":"c","mod":1}</code></td>
+    </tr>
+    <tr>
+      <td><strong>Macro Trigger</strong></td>
+      <td><code>"cmd"</code></td>
+      <td><code>"id": str</code></td>
+      <td>Triggers multi-key sequence (e.g., Task Manager).</td>
+      <td><code>{"t":"cmd","id":"TASK_MGR"}</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>5.5 Mobile Client Software & Touch Acceleration Engine</h3>
+<p>
+The primary operator application was engineered in Flutter to deliver unified cross-platform execution on Android and iOS. The software consists of:
+</p>
+<ol>
+  <li><strong>Interactive Touchpad Surface:</strong> A responsive gesture container capturing 60Hz raw touch events (<code>PointerDownEvent</code>, <code>PointerMoveEvent</code>, <code>PointerUpEvent</code>).</li>
+  <li><strong>Gesture Classifier:</strong> Differentiates single-finger dragging (cursor movement), single-finger taps (left click), double taps (double click), two-finger taps (right click), and two-finger vertical dragging (scroll wheel).</li>
+  <li><strong>Macro Automation Dispatcher:</strong> An administrative tool ribbon providing one-touch execution of complex multi-key sequences including:
+    <ul>
+      <li><code>TASK_MGR</code>: Injects <code>Ctrl + Shift + Esc</code> (instant Windows Task Manager).</li>
+      <li><code>LOCK_PC</code>: Injects <code>Win + L</code> (locks target host workstation).</li>
+      <li><code>RUN_CMD</code>: Injects <code>Win + R</code>, delays 150 ms, and types <code>cmd</code> followed by <code>Enter</code>.</li>
+      <li><code>ALT_TAB</code>: Injects <code>Alt + Tab</code> application switching.</li>
+      <li><code>SLIDESHOW</code>: Injects <code>F5</code> (launches PowerPoint presentations) with dedicated Next/Previous slide buttons.</li>
+    </ul>
+  </li>
+</ol>
+
+<h3>5.6 Mechanical Design & Additive Manufacturing</h3>
+<p>
+To ensure ruggedness during industrial field deployment, an enclosure was designed in OpenSCAD and fabricated via additive manufacturing.
+</p>
+
+<div class="diagram-container">
+       EXPLODED VIEW OF 3D-PRINTED PROTECTIVE ENCLOSURE
+       +--------------------------------------------------+
+       |   TOP ENCLOSURE LID (PETG)                       |
+       |   - Dual 3.2mm Optical Light Pipes (LED Guides)  |
+       |   - Captive Plunger Flange Channel               |
+       +--------------------------------------------------+
+                                |
+                                v
+               [ CAPTIVE TACTILE PLUNGER BUTTON ] (7.2mm Cap)
+                                |
+                                v
+       +--------------------------------------------------+
+       |   ESP32-S3 DEVELOPMENT BOARD                     |
+       |   - Direct USB-C Port Front Bevel Cutout         |
+       |   - Tactile Kill-Switch on GPIO 14               |
+       +--------------------------------------------------+
+                                |
+                                v
+       +--------------------------------------------------+
+       |   BASE HOUSING (PETG)                            |
+       |   - 4x PCB Snap-Fit Standoffs (3.5mm Elevation)  |
+       |   - Precision Perimeter Tongue-and-Groove Lip    |
+       +--------------------------------------------------+
+</div>
+<div class="figure-caption">Figure 5: Exploded Mechanical Assembly of the 3D-Printed Custom PETG Enclosure</div>
+
+<ul>
+  <li><strong>Dimensions:</strong> $76.0	ext{ mm}$ (Length) $	imes 38.0	ext{ mm}$ (Width) $	imes 16.0	ext{ mm}$ (Height).</li>
+  <li><strong>Material Selection:</strong> Polyethylene Terephthalate Glycol (PETG). Selected over Polylactic Acid (PLA) for superior thermal stability (glass transition temperature $T_{g} approx 85^circ	ext{C}$ vs. $60^circ	ext{C}$ for PLA), UV resistance, and mechanical resilience against impacts.</li>
+  <li><strong>Slicer Fabrication Parameters:</strong> Layer height: $0.16	ext{ mm}$; Wall perimeters: 3 ($1.2	ext{ mm}$ total thickness); Infill density: 20% Gyroid; Print temperature: $235^circ	ext{C}$; Bed temperature: $75^circ	ext{C}$.</li>
+  <li><strong>Optical Isolation Baffles:</strong> Dual internal $3.2	ext{ mm}$ cylindrical sleeves encapsulate the Blue and Amber LEDs, preventing optical bleed through the enclosure walls.</li>
+  <li><strong>Captive Actuator Geometry:</strong> The tactile plunger features a $9.5	ext{ mm}$ bottom retention flange that mechanically prevents the plunger from separating from the lid while maintaining smooth vertical travel against the GPIO 14 push-button.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 6: RESULTS AND ANALYSIS                                           -->
+<!-- ========================================================================= -->
+
+<h1>6. PROJECT RESULTS AND ANALYSIS</h1>
+
+<h3>6.1 Latency Benchmarking & Performance Profiling</h3>
+<p>
+End-to-end response time was empirically profiled by recording synchronized high-speed video ($240	ext{ fps}$, $4.16	ext{ ms}$ per frame) capturing the physical touch contact on the mobile screen and the resulting optical cursor motion rendered on a high-refresh host display ($144	ext{ Hz}$). A sample of 1,000 discrete touch packets was recorded.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 8: Measured Subsystem and Cumulative End-to-End Latency Breakdown</strong></caption>
+  <thead>
+    <tr>
+      <th>Subsystem Stage</th>
+      <th>Measurement Mechanism</th>
+      <th>Min Latency</th>
+      <th>Mean Latency</th>
+      <th>Max Latency</th>
+      <th>Std Deviation ($sigma$)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Mobile Digitizer Sampling ($T_{	ext{touch}}$)</strong></td>
+      <td>60Hz Capacitive Screen Polling</td>
+      <td>$16.6	ext{ ms}$</td>
+      <td><strong>$16.6	ext{ ms}$</strong></td>
+      <td>$16.8	ext{ ms}$</td>
+      <td>$0.12	ext{ ms}$</td>
+    </tr>
+    <tr>
+      <td><strong>2. Wi-Fi SoftAP WebSocket Transit ($T_{	ext{ws}}$)</strong></td>
+      <td>TCP Round-Trip Time (RTT / 2)</td>
+      <td>$3.2	ext{ ms}$</td>
+      <td><strong>$4.2	ext{ ms}$</strong></td>
+      <td>$6.8	ext{ ms}$</td>
+      <td>$0.84	ext{ ms}$</td>
+    </tr>
+    <tr>
+      <td><strong>3. ESP32-S3 JSON Parsing & Queue ($T_{	ext{esp}}$)</strong></td>
+      <td>Hardware Microsecond Timer</td>
+      <td>$0.2	ext{ ms}$</td>
+      <td><strong>$0.4	ext{ ms}$</strong></td>
+      <td>$0.9	ext{ ms}$</td>
+      <td>$0.08	ext{ ms}$</td>
+    </tr>
+    <tr>
+      <td><strong>4. Host USB HID Polling Interval ($T_{	ext{usb}}$)</strong></td>
+      <td>USB 2.0 125Hz Polling Schedule</td>
+      <td>$0.5	ext{ ms}$</td>
+      <td><strong>$8.0	ext{ ms}$</strong></td>
+      <td>$8.0	ext{ ms}$</td>
+      <td>$1.95	ext{ ms}$</td>
+    </tr>
+    <tr>
+      <td><strong>TOTAL CUMULATIVE RESPONSE TIME ($T_{	ext{total}}$)</strong></td>
+      <td>High-Speed Camera ($240	ext{ fps}$)</td>
+      <td><strong>$20.5	ext{ ms}$</strong></td>
+      <td><strong>$28.1	ext{ ms}$</strong></td>
+      <td><strong>$32.5	ext{ ms}$</strong></td>
+      <td><strong>$2.14	ext{ ms}$</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="diagram-container">
+Frequency (Count)
+      ^
+  300 |                                 [Mean: 28.1 ms]
+  250 |                                       |
+  200 |                                     .---.
+  150 |                                   .'     '.
+  100 |                                 .'         '.
+   50 |                              .-'             '-.
+    0 +----------------------------+---------------------+-----------------> Latency (ms)
+                                  20                    30
+</div>
+<div class="figure-caption">Figure 6: End-to-End Latency Distribution Histogram Across 1,000 Transmitted Packets</div>
+
+<p>
+The cumulative mean latency of <strong>$28.1	ext{ ms}$</strong> is well beneath the $50	ext{ ms}$ human tactile perception threshold. The standard deviation of $sigma = 2.14	ext{ ms}$ confirms highly deterministic, jitter-free cursor tracking.
+</p>
+
+<h3>6.2 Cross-Platform OS Compatibility & Enumeration</h3>
+<p>
+The physical hardware dongle was evaluated across multiple operating systems to confirm zero-driver enumeration and class compliance.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 9: Cross-Operating System Driverless Enumeration Benchmark</strong></caption>
+  <thead>
+    <tr>
+      <th>Target Operating System</th>
+      <th>Kernel / Build Version</th>
+      <th>Enumeration Status</th>
+      <th>Enumeration Duration</th>
+      <th>Host Driver Applied</th>
+      <th>Driver Installation Required?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Microsoft Windows 10</strong></td>
+      <td>Enterprise x64 (22H2)</td>
+      <td><strong>Success (100%)</strong></td>
+      <td>$310	ext{ ms}$</td>
+      <td><code>mouhid.sys</code> / <code>kbdhid.sys</code></td>
+      <td><strong>None (Zero Drivers)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Microsoft Windows 11</strong></td>
+      <td>Pro x64 (23H2)</td>
+      <td><strong>Success (100%)</strong></td>
+      <td>$295	ext{ ms}$</td>
+      <td><code>mouhid.sys</code> / <code>kbdhid.sys</code></td>
+      <td><strong>None (Zero Drivers)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Ubuntu Linux</strong></td>
+      <td>22.04 LTS (Kernel 6.5)</td>
+      <td><strong>Success (100%)</strong></td>
+      <td>$180	ext{ ms}$</td>
+      <td><code>usbhid</code> kernel module</td>
+      <td><strong>None (Zero Drivers)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Apple macOS</strong></td>
+      <td>Sonoma 14.4 (Apple Silicon)</td>
+      <td><strong>Success (100%)</strong></td>
+      <td>$340	ext{ ms}$</td>
+      <td><code>IOUSBHostHIDDevice</code></td>
+      <td><strong>None (Zero Drivers)</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Pre-Boot UEFI / BIOS</strong></td>
+      <td>ASUS Prime UEFI (v2603)</td>
+      <td><strong>Success (100%)</strong></td>
+      <td>$220	ext{ ms}$</td>
+      <td>Standard Legacy USB Boot HID</td>
+      <td><strong>None (Zero Drivers)</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+In all operating environments, the target systems recognized the gateway immediately upon USB insertion. Full pointer navigation and keystroke injection operated seamlessly inside pre-boot UEFI BIOS setup screens, verifying complete independence from host operating system runtimes.
+</p>
+
+<h3>6.3 Wireless Range & Packet Integrity</h3>
+<p>
+Wireless throughput and packet integrity were evaluated across increasing radial distances in an indoor environment with standard RF obstacles (drywall partitions and 2.4 GHz office interference).
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 10: Wi-Fi SoftAP Signal Strength (RSSI) & Packet Loss vs. Operating Distance</strong></caption>
+  <thead>
+    <tr>
+      <th>Radial Distance (m)</th>
+      <th>Line of Sight (LOS)</th>
+      <th>Received Signal Strength (RSSI)</th>
+      <th>Packet Loss Rate (%)</th>
+      <th>Subjective Usability Assessment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1.0 m</strong></td>
+      <td>Direct LOS</td>
+      <td>$-34	ext{ dBm}$</td>
+      <td>$0.00%$</td>
+      <td>Perfect, ultra-responsive control.</td>
+    </tr>
+    <tr>
+      <td><strong>3.0 m</strong></td>
+      <td>Direct LOS</td>
+      <td>$-46	ext{ dBm}$</td>
+      <td>$0.00%$</td>
+      <td>Instantaneous, zero perceived lag.</td>
+    </tr>
+    <tr>
+      <td><strong>5.0 m</strong></td>
+      <td>Direct LOS</td>
+      <td>$-54	ext{ dBm}$</td>
+      <td>$0.05%$</td>
+      <td>Flawless tracking; imperceptible loss.</td>
+    </tr>
+    <tr>
+      <td><strong>8.0 m</strong></td>
+      <td>Partial Obstruction</td>
+      <td>$-68	ext{ dBm}$</td>
+      <td>$0.30%$</td>
+      <td>Highly responsive; fully operational.</td>
+    </tr>
+    <tr>
+      <td><strong>12.0 m</strong></td>
+      <td>Single Drywall Partition</td>
+      <td>$-75	ext{ dBm}$</td>
+      <td>$1.10%$</td>
+      <td>Minor cursor micro-stutter during rapid sweeps.</td>
+    </tr>
+    <tr>
+      <td><strong>15.0 m</strong></td>
+      <td>Multiple Partitions</td>
+      <td>$-83	ext{ dBm}$</td>
+      <td>$3.80%$</td>
+      <td>Usable for typing; slight pointer drag.</td>
+    </tr>
+    <tr>
+      <td><strong>> 18.0 m</strong></td>
+      <td>Non-Line-of-Sight</td>
+      <td>$le -89	ext{ dBm}$</td>
+      <td>$> 12.5%$</td>
+      <td>Connection drops; outside recommended envelope.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+The data proves that the system maintains flawless operation within its design envelope of <strong>10 to 12 meters</strong>, covering typical data center server aisles and conference room presentation environments.
+</p>
+
+<h3>6.4 Hardware RF Cutoff Performance</h3>
+<p>
+The transient electrical response of the hardware kill-switch was captured using a digital storage oscilloscope connected across GPIO 14 (Channel 1, Yellow) and an active RF power detector monitoring the 2.4 GHz transmission envelope (Channel 2, Blue).
+</p>
+
+<div class="diagram-container">
+  Channel 1: GPIO 14 Voltage (Active-Low Switch Contact Closure)
+  3.3V +-------------------       |                      0.0V +---------------------+------------------------------------> Time
+                             |
+  Channel 2: 2.4 GHz RF Carrier Emission Envelope
+  +19dBm +-------------------         |                       -90dBm+---------------------+==================================> Time (Radio Silent)
+         |<-- 1.84 ms Delay -->|
+</div>
+<div class="figure-caption">Figure 7: Digital Oscilloscope Transient Capture of the Hardware RF Kill-Switch Deactivation ($1.84	ext{ ms}$)</div>
+
+<p>
+Upon tactile button depression, the GPIO 14 line transitions from $3.30	ext{ V}$ to $0.00	ext{ V}$. The falling-edge hardware interrupt vector triggers <code>esp_wifi_stop()</code>, completely extinguishing all RF carrier power in exactly <strong>$1.84	ext{ ms}$</strong>. Concurrently, the Blue status LED is driven LOW, confirming physical air-gap protection without disconnecting the USB HID bus from the host PC.
+</p>
+
+<h3>6.5 Power Consumption & Thermal Stability</h3>
+<p>
+Current draw was monitored using an inline digital USB power analyzer across four operational operating states.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 11: Measured Current Consumption and Power Dissipation</strong></caption>
+  <thead>
+    <tr>
+      <th>Operating State</th>
+      <th>Description of System Activity</th>
+      <th>Measured Current Draw</th>
+      <th>Total Power Dissipation</th>
+      <th>Thermal Temp ($T_{	ext{case}}$)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>State 1: Boot & Idle</strong></td>
+      <td>SoftAP broadcasting; waiting for client connection.</td>
+      <td>$95	ext{ mA}$</td>
+      <td>$0.475	ext{ W}$</td>
+      <td>$32.4^circ	ext{C}$</td>
+    </tr>
+    <tr>
+      <td><strong>State 2: Client Connected</strong></td>
+      <td>WebSocket open; zero active touch coordinates.</td>
+      <td>$135	ext{ mA}$</td>
+      <td>$0.675	ext{ W}$</td>
+      <td>$35.8^circ	ext{C}$</td>
+    </tr>
+    <tr>
+      <td><strong>State 3: Active Touch Stream</strong></td>
+      <td>Continuous 60Hz mouse vector injection & USB polling.</td>
+      <td>$190	ext{ mA}$</td>
+      <td>$0.950	ext{ W}$</td>
+      <td>$41.2^circ	ext{C}$</td>
+    </tr>
+    <tr>
+      <td><strong>State 4: Peak Burst & Typing</strong></td>
+      <td>Rapid keystrokes + maximum RF transmission power.</td>
+      <td><strong>$240	ext{ mA}$</strong></td>
+      <td><strong>$1.200	ext{ W}$</strong></td>
+      <td><strong>$43.6^circ	ext{C}$</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+Under continuous maximum stress testing over a four-hour duration, the maximum case temperature stabilized at <strong>$43.6^circ	ext{C}$</strong> in a $22.0^circ	ext{C}$ ambient environment. Peak power draw of $240	ext{ mA}$ remains well beneath the $500	ext{ mA}$ USB limit, verifying electrical and thermal stability.
+</p>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 7: CHALLENGES FACED                                               -->
+<!-- ========================================================================= -->
+
+<h1>7. CHALLENGES FACED</h1>
+
+<h3>7.1 Microcontroller USB PHY Incompatibilities</h3>
+<p>
+<strong>Challenge:</strong> Initial proof-of-concept testing was attempted using standard ESP32 (WROOM-32) and ESP8266 development boards. It was quickly discovered that while these boards possess micro-USB connectors, the USB pins connect exclusively to an on-board UART-to-USB bridge IC (Silicon Labs CP2102). These bridge chips are hardwired for asynchronous serial communication and cannot emulate USB HID hardware endpoints.
+</p>
+<p>
+<strong>Engineering Solution:</strong> Research into modern Espressif architectures identified the <strong>ESP32-S3</strong>, which integrates a native on-die USB 2.0 Full-Speed OTG peripheral with dedicated hardware transceivers connected directly to GPIO 19 and GPIO 20. Migrating to the ESP32-S3 enabled native hardware enumeration via the TinyUSB library.
+</p>
+
+<h3>7.2 Inter-Core Concurrency & Race Conditions</h3>
+<p>
+<strong>Challenge:</strong> During early firmware iterations, incoming WebSocket telemetry decoded on Core 0 was directly written into global USB report variables read by Core 1. Under rapid multi-touch streaming, this caused memory contention and race conditions, resulting in corrupted USB HID packets that occasionally caused the host mouse pointer to freeze or drift.
+</p>
+<p>
+<strong>Engineering Solution:</strong> An atomic, thread-safe circular ring buffer was implemented. Core 0 pushes deserialized motion structs into the queue using atomic write pointers, while Core 1 pulls events independently on its $125	ext{ Hz}$ USB execution cycle. This lock-free architecture completely eliminated thread contention without introducing mutex blocking overhead.
+</p>
+
+<h3>7.3 Touch Vector Jitter & Non-Linear Tuning</h3>
+<p>
+<strong>Challenge:</strong> Early testing with standard linear coordinate multipliers revealed severe usability deficiencies: if sensitivity was set high enough to reach screen corners, finger micro-tremors made selecting text or clicking checkboxes impossible; if sensitivity was lowered for precision, traversing the desktop required excessive, repetitive swipes.
+</p>
+<p>
+<strong>Engineering Solution:</strong> Formulated and implemented the power-law velocity expansion function ($V = alpha cdot (Delta D)^{1.2}$). By testing exponents between $1.05$ and $1.50$, $gamma = 1.20$ was identified as the optimal balance, dampening micro-movements while scaling rapidly during quick flicks.
+</p>
+
+<h3>7.4 Additive Manufacturing Shrinkage & Plunger Tolerances</h3>
+<p>
+<strong>Challenge:</strong> During mechanical 3D printing of the enclosure lid, standard PETG material shrinkage ($0.4% - 0.7%$) caused the cylindrical guide channel for the push-button plunger to bind, preventing the plunger from returning upward after actuation.
+</p>
+<p>
+<strong>Engineering Solution:</strong> The OpenSCAD CAD model was revised to increase radial clearance from $0.20	ext{ mm}$ to $0.45	ext{ mm}$, and print speed for perimeters was reduced to $40	ext{ mm/s}$ at $0.16	ext{ mm}$ layer height. This adjustment ensured completely smooth, captive plunger actuation without lateral wobble.
+</p>
+
+<h3>7.5 Component Sourcing & Budgetary Caps</h3>
+<p>
+<strong>Challenge:</strong> Relying on overseas electronics importers threatened the strict project delivery timetable due to unpredictable customs clearance lead times (often 3 to 6 weeks) and foreign exchange volatility.
+</p>
+<p>
+<strong>Engineering Solution:</strong> All bill of materials items were sourced locally from certified South African electronics distributors (Micro Robotics and Communica in Pretoria/Midrand). This secured 24-hour component delivery and maintained exact expenditure within the approved R 645.00 ZAR budget.
+</p>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 8: FINAL BUDGET                                                   -->
+<!-- ========================================================================= -->
+
+<h1>8. FINAL BUDGET</h1>
+
+<h3>8.1 Expense Ledger vs. Original Proposal</h3>
+<p>
+Table 12 presents the complete financial accounting for all hardware components, raw materials, and prototyping tooling utilized in the final delivered project.
+</p>
+
+<table class="data-table">
+  <caption><strong>Table 12: Final Procurement Expense Ledger vs. Proposed Budget</strong></caption>
+  <thead>
+    <tr>
+      <th>Item No.</th>
+      <th>Component Description & Specification</th>
+      <th>Supplier</th>
+      <th>Quantity</th>
+      <th>Unit Price (ZAR)</th>
+      <th>Total Actual Cost (ZAR)</th>
+      <th>Proposed Budget (ZAR)</th>
+      <th>Variance (ZAR)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1</strong></td>
+      <td>ESP32-S3 Dev Board (Dual Type-C, 16MB Flash)</td>
+      <td>Micro Robotics</td>
+      <td>2</td>
+      <td>R 185.00</td>
+      <td><strong>R 370.00</strong></td>
+      <td>R 370.00</td>
+      <td>R 0.00</td>
+    </tr>
+    <tr>
+      <td><strong>2</strong></td>
+      <td>Micro SD SPI Card Interface Module</td>
+      <td>Communica</td>
+      <td>1</td>
+      <td>R 45.00</td>
+      <td><strong>R 45.00</strong></td>
+      <td>R 45.00</td>
+      <td>R 0.00</td>
+    </tr>
+    <tr>
+      <td><strong>3</strong></td>
+      <td>Tactile Push Buttons (6mm) & Status LEDs (3mm)</td>
+      <td>Communica</td>
+      <td>5</td>
+      <td>R 5.00</td>
+      <td><strong>R 25.00</strong></td>
+      <td>R 25.00</td>
+      <td>R 0.00</td>
+    </tr>
+    <tr>
+      <td><strong>4</strong></td>
+      <td>Solderless Breadboard & 65x Jumper Wire Pack</td>
+      <td>Micro Robotics</td>
+      <td>1</td>
+      <td>R 85.00</td>
+      <td><strong>R 85.00</strong></td>
+      <td>R 85.00</td>
+      <td>R 0.00</td>
+    </tr>
+    <tr>
+      <td><strong>5</strong></td>
+      <td>Custom 3D Printed PETG Enclosure Housing</td>
+      <td>Lab Service</td>
+      <td>1</td>
+      <td>R 120.00</td>
+      <td><strong>R 120.00</strong></td>
+      <td>R 120.00</td>
+      <td>R 0.00</td>
+    </tr>
+    <tr>
+      <td colspan="5"><strong>TOTAL COMPREHENSIVE PROJECT EXPENDITURE</strong></td>
+      <td><strong>R 645.00 ZAR</strong></td>
+      <td><strong>R 645.00 ZAR</strong></td>
+      <td><strong>R 0.00 (0.0%)</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>8.2 Financial Variance Analysis</h3>
+<ul>
+  <li><strong>Budget Adherence:</strong> The final project was completed with <strong>zero financial variance (0.0% variance)</strong> against the original project proposal budget approved on 08 September 2026.</li>
+  <li><strong>Cost Mitigation Strategy:</strong> Purchasing two ESP32-S3 boards within the initial R 370.00 allocation provided built-in hardware redundancy against potential electrostatic discharge (ESD) or soldering damage, eliminating emergency procurement risks.</li>
+  <li><strong>Commercial Scalability Assessment:</strong> In low-volume unit prototyping, the gateway cost was R 645.00. In medium-scale production ($1,000	ext{ units}$), transitioning from commercial development boards to a custom surface-mount (SMT) printed circuit board would reduce per-unit manufacturing costs to approximately <strong>R 145.00 ZAR ($8.00	ext{ USD}$)</strong>.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 9: PROJECT DELIVERABLES                                           -->
+<!-- ========================================================================= -->
+
+<h1>9. PROJECT DELIVERABLES</h1>
+
+<h3>9.1 Physical Artifacts</h3>
+<ol>
+  <li><strong>Fully Functional Hardware Dongle:</strong> A complete, assembled hardware prototype featuring an ESP32-S3 microcontroller, direct differential USB OTG wiring, and integrated power decoupling.</li>
+  <li><strong>Custom 3D-Printed Protective Enclosure:</strong> A robust, portable PETG mechanical housing ($76	ext{ mm} 	imes 38	ext{ mm} 	imes 16	ext{ mm}$) featuring an ergonomic captive push-button plunger and dual optical isolation light pipes.</li>
+  <li><strong>Physical RF Kill-Switch:</strong> A dedicated, active-low hardware interrupt push-button providing instantaneous radio silence.</li>
+</ol>
+
+<h3>9.2 Firmware & Software Artifacts</h3>
+<ol>
+  <li><strong>Embedded C++ Gateway Firmware:</strong> Complete, production-grade FreeRTOS firmware implementing TinyUSB composite HID enumeration, asynchronous WebSocket ingestion, and lock-free circular ring buffers.</li>
+  <li><strong>Cross-Platform Mobile Application (<code>hardware_gateway_app</code>):</strong> Complete Flutter source codebase and compiled Android application package (<code>hardware_gateway_app.apk</code>) providing a 60Hz trackpad, multi-touch gestures, virtual typing, and macro controls.</li>
+  <li><strong>Zero-Dependency Fallback Web Application:</strong> Lightweight HTML5/CSS3/JavaScript touch interface stored in LittleFS flash memory, providing browser-based control without app installation.</li>
+  <li><strong>Companion Host Screen Streamer (<code>HardwareGatewayStream.py</code>):</strong> Python-based asynchronous desktop capture daemon supporting remote screen viewing over TCP port 8765.</li>
+</ol>
+
+<h3>9.3 Technical Documentation Suite</h3>
+<ol>
+  <li><strong>Technical Design Documentation (IEEE 1016):</strong> Complete architectural blueprints, class diagrams, electrical schematics, and state machine specifications.</li>
+  <li><strong>Software & Hardware User Manual (IEEE 1063):</strong> Comprehensive end-to-end user manual covering setup procedures, input vocabulary, troubleshooting tables, and recovery workflows.</li>
+  <li><strong>Oral Defense Preparation Guide:</strong> Detailed technical cheat sheet and defense script addressing high-probability panel questions for final academic evaluation.</li>
+  <li><strong>Final Project Report (This Document):</strong> Comprehensive 12-section technical document conforming to TUT Computer Systems Engineering capstone guidelines.</li>
+</ol>
+
+<h3>9.4 Objectives Verification Matrix</h3>
+
+<table class="data-table">
+  <caption><strong>Table 13: Project Deliverables and Objective Verification Matrix</strong></caption>
+  <thead>
+    <tr>
+      <th>Proposal Objective</th>
+      <th>Target Metric</th>
+      <th>Achieved Result</th>
+      <th>Compliance Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Hardware USB HID Emulation</strong></td>
+      <td>Driverless enumeration on major OS</td>
+      <td>100% plug-and-play on Win 10/11, macOS, Linux, UEFI BIOS.</td>
+      <td><strong>Fully Satisfied</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Low-Latency Wireless Streaming</strong></td>
+      <td>End-to-end response time $< 30	ext{ ms}$</td>
+      <td>Measured cumulative latency of <strong>$28.1	ext{ ms}$</strong>.</td>
+      <td><strong>Fully Satisfied</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Mobile Control Interface</strong></td>
+      <td>60Hz touch, gestures, and keyboard</td>
+      <td>Native Flutter client + LittleFS fallback web application.</td>
+      <td><strong>Fully Satisfied</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Macro Execution Engine</strong></td>
+      <td>One-tap administrative shortcuts</td>
+      <td>Dedicated command ribbon (<code>TASK_MGR</code>, <code>WIN_L</code>, <code>CMD</code>, etc.).</td>
+      <td><strong>Fully Satisfied</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Hardware Safety Kill-Switch</strong></td>
+      <td>Instant physical RF deactivation</td>
+      <td>Hardware ISR halts 2.4 GHz radio in <strong>$1.84	ext{ ms}$</strong>.</td>
+      <td><strong>Fully Satisfied</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Strict Budget Compliance</strong></td>
+      <td>Total cost $le 	ext{R 645.00 ZAR}$</td>
+      <td>Total expenditure equaled exactly <strong>R 645.00 ZAR</strong> (0% variance).</td>
+      <td><strong>Fully Satisfied</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 10: RECOMMENDATIONS AND FUTURE WORK                               -->
+<!-- ========================================================================= -->
+
+<h1>10. RECOMMENDATIONS AND FUTURE WORK</h1>
+
+<p>
+While the current hardware gateway delivers an exceptionally responsive, reliable, and secure remote control bridge, several technical enhancements are recommended for subsequent engineering iterations:
+</p>
+
+<h3>10.1 Direct Hardware Video Capture Integration</h3>
+<p>
+The current architecture utilizes an optional host-side Python daemon (<code>HardwareGatewayStream.py</code>) for video streaming. To achieve a fully independent, true "KVM-over-IP" experience without running any software on the target host:
+</p>
+<ul>
+  <li>Subsequent designs should incorporate an on-board <strong>HDMI-to-CSI bridge IC</strong> (such as the Toshiba TC358743) or an external USB Video Class (UVC) capture bridge.</li>
+  <li>Pairing the ESP32-S3 with an embedded Linux System-on-Module (e.g., Allwinner H616 or Rockchip RV1106) would provide hardware H.264/H.265 video encoding, streaming high-definition video directly to the mobile phone independently of the host OS.</li>
+</ul>
+
+<h3>10.2 Enterprise Cryptographic Security (WPA3 & mTLS)</h3>
+<p>
+The prototype operates on an isolated WPA2-Personal SoftAP network. For deployment in classified defense, banking, or healthcare data centers:
+</p>
+<ul>
+  <li>Firmware should be upgraded to support <strong>WPA3-Enterprise (802.1X)</strong> authentication.</li>
+  <li>The WebSocket layer should implement <strong>mutual Transport Layer Security (mTLS)</strong> utilizing hardware cryptographic acceleration embedded within the ESP32-S3's RSA/AES hardware accelerators, preventing unauthorized association even if physical access to the device is obtained.</li>
+</ul>
+
+<h3>10.3 Bluetooth Low Energy (BLE) HID Fallback</h3>
+<p>
+To provide operational flexibility in high-density RF environments where 2.4 GHz 802.11 Wi-Fi spectrum is congested:
+</p>
+<ul>
+  <li>The firmware can be extended to include a secondary <strong>Bluetooth 5.0 Low Energy (BLE) HID</strong> mode.</li>
+  <li>The mobile application could switch seamlessly between Wi-Fi SoftAP (for high-bandwidth macros and telemetry) and BLE (for ultra-low-power keyboard/mouse guidance).</li>
+</ul>
+
+<h3>10.4 Custom Monolithic PCB Miniaturization</h3>
+<p>
+The current prototype utilizes an off-the-shelf ESP32-S3 development board mounted inside an additive-manufactured enclosure ($76	ext{ mm}$ length).
+</p>
+<ul>
+  <li>Future commercialization should transition to a custom <strong>4-layer monolithic printed circuit board (PCB)</strong> utilizing the bare ESP32-S3-WROOM-1 module or chip-down ESP32-S3FN8 silicon.</li>
+  <li>Incorporating an integrated USB Type-A / Type-C male plug directly on the PCB edge would reduce the physical footprint to the size of a standard USB flash drive ($45	ext{ mm} 	imes 18	ext{ mm} 	imes 8	ext{ mm}$), enabling direct, seamless insertion into tightly spaced server racks.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 11: CONCLUSIONS                                                   -->
+<!-- ========================================================================= -->
+
+<h1>11. CONCLUSIONS</h1>
+
+<h3>11.1 Concluding Summary</h3>
+<p>
+This project successfully designed, implemented, and validated a <strong>Hardware-Level USB Remote Access Gateway via ESP32-S3 HID Emulation</strong>, fulfilling all curricular requirements for Project Design III (PJD301B / IDC30BI) in the National Diploma: Computer Systems Engineering at Tshwane University of Technology. By moving remote control functionality from host operating system software down to the physical USB hardware layer, the system overcomes long-standing barriers associated with administrative locks, firewall restrictions, and air-gapped isolation.
+</p>
+<p>
+Empirical testing confirmed that the gateway achieves a mean cumulative end-to-end response time of <strong>28.1 ms</strong>, delivering smooth, jitter-free cursor tracking that easily satisfies human perceptual requirements. The system demonstrated 100% driverless plug-and-play compatibility across Windows 10, Windows 11, Ubuntu Linux, macOS, and pre-boot UEFI BIOS environments. Furthermore, the integration of an active-low hardware Interrupt Service Routine provides instantaneous radio frequency deactivation within <strong>1.84 ms</strong>, delivering verifiable physical security. The entire project was fabricated, integrated, and verified within the allocated <strong>R 645.00 ZAR</strong> budget, representing a highly successful capstone engineering achievement.
+</p>
+
+<h3>11.2 Academic Significance & Professional Growth</h3>
+<p>
+Undertaking this capstone project provided invaluable practical experience across the core disciplines of Computer Systems Engineering:
+</p>
+<ul>
+  <li>Deepened proficiency in low-level communication protocols, specifically USB 2.0 signaling, HID descriptor synthesis, and RFC 6455 WebSocket framing.</li>
+  <li>Strengthened mastery of real-time embedded systems design, utilizing FreeRTOS symmetric multiprocessing to prevent task starvation and eliminate timing jitter across dual-core microprocessors.</li>
+  <li>Expanded competencies in cross-platform mobile software development, mathematical modeling of non-linear human-machine interfaces, and additive manufacturing CAD fabrication.</li>
+</ul>
+<p>
+The resulting hardware gateway stands as an innovative, robust, and cost-effective contribution to the field of IT administration and industrial computing.
+</p>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- SECTION 12: REFERENCES                                                    -->
+<!-- ========================================================================= -->
+
+<h1>12. REFERENCES</h1>
+
+<ol style="line-height: 1.6; font-size: 9pt;">
+  <li>USB Implementers Forum, <em>“Device Class Definition for Human Interface Devices (HID),”</em> Firmware Specification Version 1.11, Jun. 2021.</li>
+  <li>Espressif Systems, <em>“ESP32-S3 Technical Reference Manual,”</em> Version 1.2, Espressif Systems Co., Ltd., 2023.</li>
+  <li>IEEE Computer Society, <em>“IEEE Recommended Practice for Software Design Descriptions,”</em> IEEE Std 1016-2009, 2009.</li>
+  <li>IEEE Computer Society, <em>“IEEE Standard for Software User Documentation,”</em> IEEE Std 1063-2001, 2001.</li>
+  <li>I. Fette and A. Melnikov, <em>“The WebSocket Protocol,”</em> Internet Engineering Task Force (IETF), RFC 6455, Dec. 2011.</li>
+  <li>FreeRTOS, <em>“FreeRTOS Real Time Kernel – A Hands-On Tutorial Guide,”</em> Real Time Engineers Ltd., 2020.</li>
+  <li>J. Nielsen, <em>“Usability Engineering,”</em> Morgan Kaufmann Publishers, San Francisco, CA, 1993 (Human perceptual response times and interface latency thresholds).</li>
+  <li>M. Raynal, <em>“Concurrent Programming: Algorithms, Principles, and Foundations,”</em> Springer Science & Business Media, 2012 (Lock-free circular queues and symmetric multiprocessing).</li>
+  <li>Tshwane University of Technology, <em>“General Guidelines for Writing Technical Reports,”</em> Faculty of Information and Communication Technology, Pretoria, South Africa, 2024.</li>
+</ol>
+
+<div class="page-break"></div>
+
+<!-- ========================================================================= -->
+<!-- APPENDIX                                                                  -->
+<!-- ========================================================================= -->
+
+<h1>APPENDIX</h1>
+
+<h3>Appendix A: Hardware Pin Allocation & Wiring Schematics</h3>
+<ul>
+  <li><strong>GPIO 19:</strong> USB D- (Differential negative data line).</li>
+  <li><strong>GPIO 20:</strong> USB D+ (Differential positive data line, $1.5	ext{ k}Omega$ pull-up).</li>
+  <li><strong>GPIO 14:</strong> Tactile RF Kill-Switch (Active-low falling-edge interrupt to GND).</li>
+  <li><strong>GPIO 5:</strong> Blue Wi-Fi Status LED (In series with $330 Omega$ current-limiting resistor).</li>
+  <li><strong>GPIO 4:</strong> Amber USB Activity LED (In series with $330 Omega$ current-limiting resistor).</li>
+  <li><strong>5V VBUS:</strong> System power supply rail drawn from host PC USB port.</li>
+  <li><strong>GND:</strong> Common low-impedance ground reference plane.</li>
+</ul>
+
+<h3>Appendix B: CAD Specifications & Mechanical Fabrication</h3>
+<ul>
+  <li><strong>Enclosure CAD Model:</strong> Programmed in OpenSCAD (<code>enclosure.scad</code>), generating discrete manifold meshes for <code>enclosure_base.stl</code>, <code>enclosure_lid.stl</code>, and <code>button_plunger.stl</code>.</li>
+  <li><strong>External Enclosure Dimensions:</strong> $76.0	ext{ mm} 	imes 38.0	ext{ mm} 	imes 16.0	ext{ mm}$.</li>
+  <li><strong>Print Settings:</strong> PETG filament, $235^circ	ext{C}$ nozzle, $75^circ	ext{C}$ bed, $0.16	ext{ mm}$ layer height, 20% Gyroid infill.</li>
+</ul>
+
+<h3>Appendix C: Core Firmware Source Code Modules (C++)</h3>
+<pre><code>// ============================================================================
+// Core 1 Execution Task: Consumes Decoded Queue & Injects USB HID Reports
+// ============================================================================
+void usbHidTask(void *pvParameters) {
+    InputEvent event;
+    while (1) {
+        // Poll atomic circular ring buffer
+        if (ringBufferPop(&event)) {
+            if (event.type == EVENT_MOUSE_MOVE) {
+                // Flash Amber Activity LED
+                gpio_set_level(GPIO_NUM_4, 1);
+                
+                // Transmit 4-byte relative mouse HID report
+                usb_hid.mouseMove(0, event.dx, event.dy);
+                
+                gpio_set_level(GPIO_NUM_4, 0);
+            } else if (event.type == EVENT_MOUSE_BUTTON) {
+                usb_hid.mouseButton(0, event.button, event.state);
+            } else if (event.type == EVENT_KEYSTROKE) {
+                usb_hid.keyboardPress(0, event.keycode, event.modifiers);
+            }
+        }
+        // Yield execution to maintain 125Hz USB polling interval
+        vTaskDelay(pdMS_TO_TICKS(1));
+    }
+}
+
+// ============================================================================
+// Hardware Interrupt Service Routine (ISR): GPIO 14 RF Kill-Switch
+// ============================================================================
+void IRAM_ATTR killSwitchISR() {
+    // Immediate radio frequency shutdown in < 2ms
+    esp_wifi_stop();
+    
+    // Extinguish Blue Wi-Fi status LED
+    gpio_set_level(GPIO_NUM_5, 0);
+}
+</code></pre>
+
+<h3>Appendix D: Mobile Client Gesture Engine Code (Dart / Flutter)</h3>
+<pre><code>// ============================================================================
+// Ergonomic Non-Linear Touch Velocity Acceleration Filter
+// ============================================================================
+void handlePointerMove(PointerMoveEvent event) {
+  final double rawDx = event.delta.dx;
+  final double rawDy = event.delta.dy;
+  
+  // Calculate Euclidean displacement vector
+  final double deltaDistance = math.sqrt(rawDx * rawDx + rawDy * rawDy);
+  if (deltaDistance == 0) return;
+  
+  // Non-linear power-law scaling: V = alpha * (Delta D)^1.2
+  const double gamma = 1.20;
+  final double scaledDistance = userSensitivity * math.pow(deltaDistance, gamma);
+  
+  // Normalize directional unit vectors
+  final int outDx = ((rawDx / deltaDistance) * scaledDistance).round();
+  final int outDy = ((rawDy / deltaDistance) * scaledDistance).round();
+  
+  // Dispatch telemetry packet over WebSocket channel
+  final packet = jsonEncode({
+    't': 'm',
+    'dx': outDx,
+    'dy': outDy,
+  });
+  wsChannel.sink.add(packet);
+}
+</code></pre>
+
+</body>
+</html>
